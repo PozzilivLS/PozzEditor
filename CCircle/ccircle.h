@@ -8,7 +8,7 @@ class CCircle : public QWidget {
   Q_OBJECT
 
  public:
-  CCircle(QWidget *parent = nullptr, int rad = 1, QPointF coordinates = QPointF(),
+  CCircle(QWidget *parent = nullptr, int rad = 100, QPoint coordinates = QPoint(),
           QColor color = Qt::red);
   ~CCircle();
 

@@ -11,13 +11,21 @@ PaintBox::~PaintBox() {}
 void PaintBox::paintEvent(QPaintEvent *event) {
   QPainter painter(this);
   QBrush br(Qt::darkGray, Qt::SolidPattern);
-  //painter.setBrush(br);
+  painter.setBrush(br);
   painter.setPen(Qt::darkGray);
-  QRect r(pos(), size());
-  painter.drawRect(r);
+  painter.drawRect(rect());
 }
 
 void PaintBox::mousePressEvent(QMouseEvent *event) {
-  CCircle *circle = new CCircle(this, 10, event->position());
-  qDebug() << circle->size() << circle->pos();
+  lastPos = event->pos();
+  CCircle *circle = new CCircle(this, 30, event->pos());
+  circle->show();
+}
+
+void PaintBox::mouseMoveEvent(QMouseEvent *event) {
+  if ((lastPos - event->pos()).manhattanLength() >= epsilon) {
+    CCircle *circle = new CCircle(this, 30, event->pos());
+    circle->show();
+    lastPos = event->pos();
+  }
 }

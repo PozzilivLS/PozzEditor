@@ -7,8 +7,9 @@ Lab::Lab(QWidget *parent) : QMainWindow(parent) {
   paintBox_ = new PaintBox();
 
   paintBox_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  paintBox_->move(0, 0);
   ui.centralWidget->layout()->addWidget(paintBox_);
+
+  paintBox_->show();
 }
 
 Lab::~Lab() {}

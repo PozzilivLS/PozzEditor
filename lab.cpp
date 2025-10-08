@@ -1,9 +1,19 @@
 #include "lab.h"
 #include <QPainter>
+#include <User/user.h>
 
 Lab::Lab(QWidget *parent) : QMainWindow(parent) {
   ui.setupUi(this);
 
+  connect(ui.brushSizeSlider, SIGNAL(valueChanged(int)),
+          SLOT(brushSizeSliderValueChanged(int)));
+
+  setUpPaintBox();
+}
+
+Lab::~Lab() {}
+
+void Lab::setUpPaintBox() {
   paintBoxPresenter_ = new PaintBoxPresenter();
   paintBox_ = new PaintBox();
 
@@ -15,4 +25,6 @@ Lab::Lab(QWidget *parent) : QMainWindow(parent) {
   paintBox_->show();
 }
 
-Lab::~Lab() {}
+void Lab::brushSizeSliderValueChanged(int value) {
+  User::getInstance()->BrushSize = value;
+}

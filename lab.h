@@ -13,6 +13,11 @@ class Lab : public QMainWindow {
   Lab(QWidget *parent = nullptr);
   ~Lab();
 
+  void setUpPaintBox();
+ 
+ private slots:
+  void brushSizeSliderValueChanged(int value);
+
  private:
   PaintBox* paintBox_;
   PaintBoxPresenter* paintBoxPresenter_;

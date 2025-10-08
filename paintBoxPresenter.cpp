@@ -1,6 +1,7 @@
 #include "paintBoxPresenter.h"
 
 #include <CCircle/ccircle.h>
+#include <User/user.h>
 
 #include <QMouseEvent>
 
@@ -17,7 +18,8 @@ void PaintBoxPresenter::subscribeView(PaintBox* view) {
 
 void PaintBoxPresenter::onMousePress(QMouseEvent* event) {
   lastPos_ = event->pos();
-  CCircle* circle = new CCircle(view_, 30, event->pos());
+  CCircle* circle =
+      new CCircle(view_, User::getInstance()->BrushSize, event->pos());
   circle->show();
   model_->addChunk();
   model_->addCircleInBox(circle);
@@ -25,7 +27,8 @@ void PaintBoxPresenter::onMousePress(QMouseEvent* event) {
 
 void PaintBoxPresenter::onMouseMove(QMouseEvent* event) {
   if ((lastPos_ - event->pos()).manhattanLength() >= epsilon_) {
-    CCircle* circle = new CCircle(view_, 30, event->pos());
+    CCircle* circle =
+        new CCircle(view_, User::getInstance()->BrushSize, event->pos());
     circle->show();
     model_->addCircleInBox(circle);
     lastPos_ = event->pos();

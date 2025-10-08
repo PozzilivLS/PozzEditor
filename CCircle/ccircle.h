@@ -16,7 +16,7 @@ class CCircle : public QWidget {
   void paintEvent(QPaintEvent *event) override;
 
  private:
-  int rad_ = 1;
+  const int rad_ = 1;
   QColor color_;
 
   Ui::CCircleClass ui;

@@ -1,7 +1,7 @@
 #include "paintbox.h"
 
-#include <QPainter>
 #include <QMouseEvent>
+#include <QPainter>
 
 PaintBox::PaintBox(QWidget *parent) : QWidget(parent) { ui.setupUi(this); }
 
@@ -15,20 +15,6 @@ void PaintBox::paintEvent(QPaintEvent *event) {
   painter.drawRect(rect());
 }
 
-void PaintBox::mousePressEvent(QMouseEvent *event) {
-  /*lastPos_ = event->pos();
-  CCircle *circle = new CCircle(this, 30, event->pos());
-  circle->show();
-  globalStorage_->addElement(circle);
-  chunks_.emplace_back(new Chunk<CCircle*>());
-  chunks_.back()->addElement(circle);*/
-}
+void PaintBox::mousePressEvent(QMouseEvent *event) { emit mousePress(event); }
 
-void PaintBox::mouseMoveEvent(QMouseEvent *event) {
-  /*if ((lastPos_ - event->pos()).manhattanLength() >= epsilon_) {
-    CCircle *circle = new CCircle(this, 30, event->pos());
-    circle->show();
-    chunks_.back()->addElement(circle);
-    lastPos_ = event->pos();
-  }*/
-}
+void PaintBox::mouseMoveEvent(QMouseEvent *event) { emit mouseMove(event); }

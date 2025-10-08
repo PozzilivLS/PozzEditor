@@ -1,14 +1,23 @@
 #pragma once
-#include <PaintBox/paintbox.h>
-#include <paintBoxModel.h>
-class PaintBoxPresenter {
- public:
-  PaintBoxPresenter() = delete;
-  PaintBoxPresenter(PaintBox* view, PaintBoxModel* model);
+#include <QObject>
 
-  void mousePress(QMouseEvent* event);
-  void mouseMove(QMouseEvent* event);
+#include "PaintBox/paintbox.h"
+#include "paintBoxModel.h"
+class PaintBoxPresenter : public QObject {
+  Q_OBJECT
+ public:
+  PaintBoxPresenter(QObject* parent = nullptr);
+
+  void subscribeView(PaintBox* view);
+
+ private slots:
+  void onMousePress(QMouseEvent* event);
+  void onMouseMove(QMouseEvent* event);
+
  private:
-  PaintBox* const view_ = nullptr;
-  PaintBoxModel* const model_ = nullptr;
+  PaintBox* view_ = nullptr;
+  PaintBoxModel* model_ = nullptr;
+
+  QPoint lastPos_;
+  int epsilon_ = 5;
 };

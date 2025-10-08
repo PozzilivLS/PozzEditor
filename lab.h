@@ -3,6 +3,7 @@
 #include <QtWidgets/QMainWindow>
 
 #include "PaintBox/paintbox.h"
+#include <paintBoxPresenter.h>
 #include "ui_lab.h"
 
 class Lab : public QMainWindow {
@@ -14,5 +15,6 @@ class Lab : public QMainWindow {
 
  private:
   PaintBox* paintBox_;
+  PaintBoxPresenter* paintBoxPresenter_;
   Ui::LabClass ui;
 };

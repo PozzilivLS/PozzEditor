@@ -3,7 +3,7 @@
 #include <QWidget>
 
 #include "ui_ccircle.h"
-#include <Chunk/chunk.h>
+#include "./Chunk/chunk.h"
 
 class CCircle : public QWidget {
   Q_OBJECT

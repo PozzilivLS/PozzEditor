@@ -2,9 +2,6 @@
 
 #include <QWidget>
 
-#include "../CCircle/ccircle.h"
-#include "../Chunk/chunk.h"
-#include "../Storage/storage.h"
 #include "ui_paintbox.h"
 
 class PaintBox : public QWidget {
@@ -18,6 +15,10 @@ class PaintBox : public QWidget {
   void paintEvent(QPaintEvent *event) override;
   void mousePressEvent(QMouseEvent *event) override;
   void mouseMoveEvent(QMouseEvent *event) override;
+
+ signals:
+  void mousePress(QMouseEvent *event);
+  void mouseMove(QMouseEvent *event);
 
  private:
   Ui::PaintBoxClass ui;

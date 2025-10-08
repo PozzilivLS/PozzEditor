@@ -3,6 +3,7 @@
 #include <QWidget>
 
 #include "ui_ccircle.h"
+#include <Chunk/chunk.h>
 
 class CCircle : public QWidget {
   Q_OBJECT
@@ -12,12 +13,16 @@ class CCircle : public QWidget {
           QColor color = Qt::red);
   ~CCircle();
 
+  Chunk<CCircle> *getChunk();
+
  protected:
   void paintEvent(QPaintEvent *event) override;
 
  private:
   const int rad_ = 1;
   QColor color_;
+
+  Chunk<CCircle> *chunk_;
 
   Ui::CCircleClass ui;
 };

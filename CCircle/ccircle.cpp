@@ -13,6 +13,8 @@ CCircle::CCircle(QWidget *parent, int rad, QPoint coordinates,
 
 CCircle::~CCircle() {}
 
+Chunk<CCircle> *CCircle::getChunk() { return chunk_; }
+
 void CCircle::paintEvent(QPaintEvent *event) {
   QPainter painter(this);
   QBrush br(color_);

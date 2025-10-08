@@ -2,6 +2,9 @@
 
 #include <QWidget>
 
+#include "../CCircle/ccircle.h"
+#include "../Chunk/chunk.h"
+#include "../Storage/storage.h"
 #include "ui_paintbox.h"
 
 class PaintBox : public QWidget {
@@ -17,8 +20,5 @@ class PaintBox : public QWidget {
   void mouseMoveEvent(QMouseEvent *event) override;
 
  private:
-  QPoint lastPos;
-  int epsilon = 5;
-
   Ui::PaintBoxClass ui;
 };

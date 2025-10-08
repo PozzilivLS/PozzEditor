@@ -2,7 +2,6 @@
 
 #include <QPainter>
 #include <QMouseEvent>
-#include "CCircle/ccircle.h"
 
 PaintBox::PaintBox(QWidget *parent) : QWidget(parent) { ui.setupUi(this); }
 
@@ -17,15 +16,19 @@ void PaintBox::paintEvent(QPaintEvent *event) {
 }
 
 void PaintBox::mousePressEvent(QMouseEvent *event) {
-  lastPos = event->pos();
+  /*lastPos_ = event->pos();
   CCircle *circle = new CCircle(this, 30, event->pos());
   circle->show();
+  globalStorage_->addElement(circle);
+  chunks_.emplace_back(new Chunk<CCircle*>());
+  chunks_.back()->addElement(circle);*/
 }
 
 void PaintBox::mouseMoveEvent(QMouseEvent *event) {
-  if ((lastPos - event->pos()).manhattanLength() >= epsilon) {
+  /*if ((lastPos_ - event->pos()).manhattanLength() >= epsilon_) {
     CCircle *circle = new CCircle(this, 30, event->pos());
     circle->show();
-    lastPos = event->pos();
-  }
+    chunks_.back()->addElement(circle);
+    lastPos_ = event->pos();
+  }*/
 }

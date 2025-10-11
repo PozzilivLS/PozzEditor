@@ -2,8 +2,10 @@
 
 #include <CCircle/ccircle.h>
 #include <User/user.h>
+#include <Chunk/chunk.h>
 
 #include <QMouseEvent>
+#include <QPainter>
 
 PaintBoxPresenter::PaintBoxPresenter(QObject* parent)
     : QObject(parent), model_(new PaintBoxModel()) {}
@@ -14,23 +16,64 @@ void PaintBoxPresenter::subscribeView(PaintBox* view) {
                    SLOT(onMousePress(QMouseEvent*)));
   QObject::connect(view_, SIGNAL(mouseMove(QMouseEvent*)),
                    SLOT(onMouseMove(QMouseEvent*)));
+  QObject::connect(view_, SIGNAL(paint(QPaintEvent*)),
+                   SLOT(onPaint(QPaintEvent*)));
 }
 
 void PaintBoxPresenter::onMousePress(QMouseEvent* event) {
-  lastPos_ = event->pos();
-  CCircle* circle =
-      new CCircle(view_, User::getInstance()->BrushSize, event->pos());
-  circle->show();
-  model_->addChunk();
-  model_->addCircleInBox(circle);
+  if (User::getInstance()->MouseType == MouseType::Brush) {
+    model_->addChunk();
+    PaintObj(event->pos());
+  }
 }
 
 void PaintBoxPresenter::onMouseMove(QMouseEvent* event) {
-  if ((lastPos_ - event->pos()).manhattanLength() >= epsilon_) {
-    CCircle* circle =
-        new CCircle(view_, User::getInstance()->BrushSize, event->pos());
-    circle->show();
-    model_->addCircleInBox(circle);
-    lastPos_ = event->pos();
+  if (User::getInstance()->MouseType == MouseType::Brush &&
+      !User::getInstance()->SingleDrawing) {
+    if ((lastPos_ - event->pos()).manhattanLength() >= epsilon_) {
+      PaintObj(event->pos());
+    }
   }
+}
+
+void PaintBoxPresenter::onPaint(QPaintEvent* event) {
+  const Storage<CCircle*>& objects = model_->getAllObj();
+  for (const auto& obj : objects) {
+    QPainter painter(view_);
+    QBrush br(obj->getColor());
+    painter.setBrush(br);
+    painter.setPen(obj->getColor());
+    QRect rect(obj->getPos(), QSize(obj->getRad() * 2, obj->getRad() * 2));
+    painter.drawEllipse(rect);
+  }
+}
+
+void PaintBoxPresenter::PaintObj(QPoint pos) {
+  lastPos_ = pos;
+  int rad = User::getInstance()->BrushSize / 2;
+  QPoint circlePos(pos.x() - rad, pos.y() - rad);
+  CCircle* circle = new CCircle(circlePos, rad);
+  model_->addCircleInBox(circle);
+
+  view_->update();
+}
+
+void PaintBoxPresenter::ChooseObj(QPoint pos) {
+  const Chunk& choosedChunk = ChooseChunk(pos);
+
+  if (choosedChunk.size() > 0) {
+    
+  }
+}
+
+const Chunk& PaintBoxPresenter::ChooseChunk(QPoint pos) {
+  const std::vector<Chunk>& chunks = model_->getChunks();
+
+  for (int i = chunks.size() - 1; i >= 0; --i) {
+    if (chunks[i].hasPointIn(pos)) {
+      return chunks[i];
+    }
+  }
+
+  return Chunk();
 }

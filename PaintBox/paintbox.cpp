@@ -13,6 +13,8 @@ void PaintBox::paintEvent(QPaintEvent *event) {
   painter.setBrush(br);
   painter.setPen(Qt::darkGray);
   painter.drawRect(rect());
+
+  emit paint(event);
 }
 
 void PaintBox::mousePressEvent(QMouseEvent *event) { emit mousePress(event); }

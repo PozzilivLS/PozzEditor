@@ -19,6 +19,7 @@ class PaintBox : public QWidget {
  signals:
   void mousePress(QMouseEvent *event);
   void mouseMove(QMouseEvent *event);
+  void paint(QPaintEvent *event);
 
  private:
   Ui::PaintBoxClass ui;

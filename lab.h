@@ -17,6 +17,9 @@ class Lab : public QMainWindow {
  
  private slots:
   void brushSizeSliderValueChanged(int value);
+  void cursorChoosed();
+  void brushChoosed();
+  void drawingModeChanged(Qt::CheckState state);
 
  private:
   PaintBox* paintBox_;

@@ -10,7 +10,9 @@ class PaintBoxModel {
   void addCircleInBox(CCircle *object);
   void addChunk();
 
+  const std::vector<Chunk> &getChunks() const;
+  const Storage<CCircle *> &getAllObj() const;
  private:
-  std::vector<Chunk<CCircle *>> chunks_;
+  std::vector<Chunk> chunks_;
   Storage<CCircle *> globalStorage_;
 };

@@ -7,4 +7,12 @@ void PaintBoxModel::addCircleInBox(CCircle* object) {
   chunks_.back().addElement(object);
 }
 
-void PaintBoxModel::addChunk() { chunks_.emplace_back(Chunk<CCircle*>()); }
+void PaintBoxModel::addChunk() { chunks_.emplace_back(Chunk()); }
+
+const Storage<CCircle*>& PaintBoxModel::getAllObj() const {
+  return globalStorage_;
+}
+
+const std::vector<Chunk>& PaintBoxModel::getChunks() const {
+  return chunks_;
+}

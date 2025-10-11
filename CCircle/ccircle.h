@@ -2,27 +2,23 @@
 
 #include <QWidget>
 
-#include "ui_ccircle.h"
 #include "./Chunk/chunk.h"
+#include "ui_ccircle.h"
 
-class CCircle : public QWidget {
-  Q_OBJECT
-
+class CCircle {
  public:
-  CCircle(QWidget *parent = nullptr, int rad = 100, QPoint coordinates = QPoint(),
-          QColor color = Qt::red);
+  CCircle(QPoint coordinates = QPoint(), int rad = 1, QColor color = Qt::red);
   ~CCircle();
 
-  Chunk<CCircle> *getChunk();
-
- protected:
-  void paintEvent(QPaintEvent *event) override;
+  Chunk *getChunk() const;
+  int getRad() const;
+  QPoint getPos() const;
+  QColor getColor() const;
 
  private:
+  const QPoint pos_;
   const int rad_ = 1;
   QColor color_;
 
-  Chunk<CCircle> *chunk_;
-
-  Ui::CCircleClass ui;
+  Chunk *chunk_;
 };

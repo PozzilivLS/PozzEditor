@@ -1,21 +1,32 @@
 #pragma once
 
+#include <cstddef>
+#include <iterator>
 #include <vector>
 
 template <typename T>
 class Storage {
-  using ElementType = T;
+  using StorageType = std::vector<T>;
 
  public:
-  Storage();
-  ~Storage();
+  typename StorageType::iterator begin() { return data_.begin(); };
+  typename StorageType::iterator end() { return data_.end(); };
 
-  void addElement(const T& el);
-  void removeElement(const T& el);
+  typename StorageType::const_iterator begin() const { return data_.begin(); };
+  typename StorageType::const_iterator end() const { return data_.end(); };
+  typename StorageType::const_iterator cbegin() const { return data_.cbegin(); };
+  typename StorageType::const_iterator cend() const { return data_.cend(); };
+
+  Storage();
+  virtual ~Storage();
+
+  virtual void addElement(const T& el);
+  virtual void removeElement(const T& el);
   size_t size() const;
 
   T& operator[](size_t index);
- private:
+
+ protected:
   std::vector<T> data_;
 };
 

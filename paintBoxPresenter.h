@@ -2,6 +2,7 @@
 #include <QObject>
 
 #include "PaintBox/paintbox.h"
+#include "Chunk/chunk.h"
 #include "paintBoxModel.h"
 class PaintBoxPresenter : public QObject {
   Q_OBJECT
@@ -13,8 +14,13 @@ class PaintBoxPresenter : public QObject {
  private slots:
   void onMousePress(QMouseEvent* event);
   void onMouseMove(QMouseEvent* event);
+  void onPaint(QPaintEvent* event);
 
  private:
+  void PaintObj(QPoint pos);
+  void ChooseObj(QPoint pos);
+  const Chunk& ChooseChunk(QPoint pos);
+
   PaintBox* view_ = nullptr;
   PaintBoxModel* model_ = nullptr;
 

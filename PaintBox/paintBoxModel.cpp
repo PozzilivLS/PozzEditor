@@ -13,6 +13,8 @@ void PaintBoxModel::addSelection(Chunk* selection) {
   selections_.addElement(selection);
 }
 
+void PaintBoxModel::clearAllSelections() { selections_.clear(); }
+
 const Storage<CCircle*>& PaintBoxModel::getAllObj() const {
   return globalStorage_;
 }

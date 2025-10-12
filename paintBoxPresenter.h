@@ -22,6 +22,7 @@ class PaintBoxPresenter : public QObject {
   void PaintSelection(const Chunk* selection);
   void ChooseObj(QPoint pos);
   std::vector<Chunk*> ChooseChunks(QPoint pos);
+  void ResetSelection();
 
   PaintBox* view_ = nullptr;
   PaintBoxModel* model_ = nullptr;

@@ -12,6 +12,7 @@ class PaintBoxModel {
   void addCircleInBox(CCircle *object);
   void addChunk();
   void addSelection(Chunk *selection);
+  void clearAllSelections();
 
   const std::vector<Chunk *> &getChunks() const;
   const Storage<CCircle *> &getAllObj() const;

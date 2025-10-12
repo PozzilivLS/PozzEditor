@@ -25,6 +25,7 @@ void PaintBoxPresenter::onMousePress(QMouseEvent* event) {
     model_->addChunk();
     AddObj(event->pos());
   } else if (User::getInstance()->MouseType == MouseType::Cursor) {
+    ResetSelection();
     ChooseObj(event->pos());
   }
 }
@@ -103,4 +104,9 @@ std::vector<Chunk*> PaintBoxPresenter::ChooseChunks(QPoint pos) {
   }
 
   return res;
+}
+
+void PaintBoxPresenter::ResetSelection() {
+  model_->clearAllSelections();
+  view_->update();
 }

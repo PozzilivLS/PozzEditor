@@ -23,6 +23,7 @@ class Storage {
   virtual void addElement(const T& el);
   virtual void removeElement(const T& el);
   virtual void removeElementByIndex(const int index);
+  virtual void clear();
   size_t size() const;
 
   T& operator[](size_t index);
@@ -56,6 +57,11 @@ inline void Storage<T>::removeElementByIndex(const int index) {
 template <typename T>
 size_t Storage<T>::size() const {
   return data_.size();
+}
+
+template <typename T>
+void Storage<T>::clear() {
+  data_.clear();
 }
 
 template <typename T>

@@ -31,11 +31,16 @@ bool Chunk::isCircleInPoint(QPoint point) const {
   }
 
   auto sqrMagnitude = [](QPoint a, QPoint b) {
-
-    }
+    QPoint c = a - b;
+    return c.x() * c.x() + c.y() * c.y();
+  };
 
   int rad = data_[0]->getRad();
   for (const auto& circle : data_) {
-    if ((circle->getPos() - point))
+    if (sqrMagnitude(point, circle->getPos()) <= rad) {
+      return true;
+    }
   }
+
+  return false;
 }

@@ -17,7 +17,8 @@ class PaintBoxPresenter : public QObject {
   void onPaint(QPaintEvent* event);
 
  private:
-  void PaintObj(QPoint pos);
+  void AddObj(QPoint pos);
+  void PaintObj(const CCircle* obj);
   void ChooseObj(QPoint pos);
   const Chunk& ChooseChunk(QPoint pos);
 

@@ -9,6 +9,8 @@ class Chunk : public Storage<CCircle*> {
   bool hasPointIn(QPoint point) const;
   bool isCircleInPoint(QPoint point) const;
 
+  QRect getArea() const;
+
  private:
   int leftx_ = 0;
   int upy_ = 0;

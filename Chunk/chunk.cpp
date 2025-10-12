@@ -1,10 +1,17 @@
 #include "chunk.h"
 
+#include <QDebug>
 void Chunk::addElement(CCircle* const& el) {
   Storage::addElement(el);
 
   QPoint luPoint = el->getPos();
   QPoint rdPoint = el->getPos() + QPoint(el->getRad() * 2, el->getRad() * 2);
+
+  
+  if (size() == 1) {
+    leftx_ = luPoint.x();
+    upy_ = luPoint.y();
+  }
 
   if (leftx_ > luPoint.x()) {
     leftx_ = luPoint.x();
@@ -21,12 +28,12 @@ void Chunk::addElement(CCircle* const& el) {
 }
 
 bool Chunk::hasPointIn(QPoint point) const {
-  return (point.x() > leftx_ && point.x() < rightx) &&
-         (point.y() > upy_ && point.y() < downy_);
+  return ((point.x() > leftx_ && point.x() < rightx) &&
+         (point.y() > upy_ && point.y() < downy_));
 }
 
 bool Chunk::isCircleInPoint(QPoint point) const {
-  if (data_.size() == 0) {
+  if (size() == 0) {
     return false;
   }
 
@@ -37,10 +44,14 @@ bool Chunk::isCircleInPoint(QPoint point) const {
 
   int rad = data_[0]->getRad();
   for (const auto& circle : data_) {
-    if (sqrMagnitude(point, circle->getPos()) <= rad) {
+    if (sqrMagnitude(point, circle->getCentralPos()) <= rad * rad) {
       return true;
     }
   }
 
   return false;
+}
+
+QRect Chunk::getArea() const {
+  return QRect(leftx_, upy_, rightx - leftx_, downy_ - upy_);
 }

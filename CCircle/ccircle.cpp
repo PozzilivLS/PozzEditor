@@ -7,10 +7,14 @@ CCircle::CCircle(QPoint coordinates, int rad, QColor color)
 
 CCircle::~CCircle() {}
 
-Chunk *CCircle::getChunk() const { return chunk_; }
-
 int CCircle::getRad() const { return rad_; }
 
 QPoint CCircle::getPos() const { return pos_; }
 
+QPoint CCircle::getCentralPos() const { return pos_ + QPoint(rad_, rad_); }
+
 QColor CCircle::getColor() const { return color_; }
+
+QRect CCircle::getBounds() const {
+  return QRect(pos_, QSize(rad_ * 2, rad_ * 2));
+}

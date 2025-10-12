@@ -24,6 +24,8 @@ void PaintBoxPresenter::onMousePress(QMouseEvent* event) {
   if (User::getInstance()->MouseType == MouseType::Brush) {
     model_->addChunk();
     AddObj(event->pos());
+  } else if (User::getInstance()->MouseType == MouseType::Cursor) {
+    ChooseObj(event->pos());
   }
 }
 
@@ -41,6 +43,11 @@ void PaintBoxPresenter::onPaint(QPaintEvent* event) {
   for (const auto& obj : objects) {
     PaintObj(obj);
   }
+
+  const Storage<Chunk*>& selections = model_->getAllSelections();
+  for (const auto& obj : selections) {
+    PaintSelection(obj);
+  }
 }
 
 void PaintBoxPresenter::AddObj(QPoint pos) {
@@ -50,7 +57,8 @@ void PaintBoxPresenter::AddObj(QPoint pos) {
   CCircle* circle = new CCircle(circlePos, rad);
   model_->addCircleInBox(circle);
 
-  PaintObj(circle);
+  QRect updateZone = circle->getBounds().adjusted(-2, -2, 2, 2);
+  view_->update(updateZone);
 }
 
 void PaintBoxPresenter::PaintObj(const CCircle* obj) {
@@ -62,24 +70,37 @@ void PaintBoxPresenter::PaintObj(const CCircle* obj) {
   painter.drawEllipse(rect);
 }
 
-void PaintBoxPresenter::ChooseObj(QPoint pos) {
-  const Chunk& choosedChunk = ChooseChunk(pos);
+void PaintBoxPresenter::PaintSelection(const Chunk* selection) {
+  QPainter painter(view_);
+  painter.setPen(Qt::blue);
+  painter.drawRect(selection->getArea());
+}
 
-  if (choosedChunk.size() > 0) {
-    if (choosedChunk.isCircleInPoint(pos)) {
-      
+void PaintBoxPresenter::ChooseObj(QPoint pos) {
+  std::vector<Chunk*> choosedChunks = ChooseChunks(pos);
+
+  for (const auto& chunk : choosedChunks) {
+    if (chunk->isCircleInPoint(pos)) {
+      model_->addSelection(chunk);
+
+      QRect updateZone = chunk->getArea().adjusted(-2, -2, 2, 2);
+      view_->update(updateZone);
+
+      return; // DELETE to multiply seletion
     }
   }
 }
 
-const Chunk& PaintBoxPresenter::ChooseChunk(QPoint pos) {
-  const std::vector<Chunk>& chunks = model_->getChunks();
+std::vector<Chunk*> PaintBoxPresenter::ChooseChunks(QPoint pos) {
+  std::vector<Chunk*> res;
+
+  const std::vector<Chunk*>& chunks = model_->getChunks();
 
   for (int i = chunks.size() - 1; i >= 0; --i) {
-    if (chunks[i].hasPointIn(pos)) {
-      return chunks[i];
+    if (chunks[i]->hasPointIn(pos)) {
+      res.emplace_back(chunks[i]);
     }
   }
 
-  return Chunk();
+  return res;
 }

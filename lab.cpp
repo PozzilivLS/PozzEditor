@@ -3,6 +3,7 @@
 #include <User/user.h>
 
 #include <QPainter>
+#include <QKeyEvent>
 
 Lab::Lab(QWidget *parent) : QMainWindow(parent) {
   ui.setupUi(this);
@@ -31,15 +32,33 @@ void Lab::setUpPaintBox() {
   paintBox_->show();
 }
 
+void Lab::keyPressEvent(QKeyEvent *event) {
+  if (event->modifiers() & Qt::ControlModifier) {
+    User::getInstance()->CtrlModifierPressed = true;
+  }
+}
+
+void Lab::keyReleaseEvent(QKeyEvent *event) {
+  if (!(event->modifiers() & Qt::ControlModifier)) {
+    User::getInstance()->CtrlModifierPressed = false;
+  }
+}
+
 void Lab::brushSizeSliderValueChanged(int value) {
   User::getInstance()->BrushSize = value;
 }
 
 void Lab::cursorChoosed() {
+  //ui.chooseMouseBtn->setEnabled(false);
   User::getInstance()->MouseType = MouseType::Cursor;
+  //ui.chooseBrushBtn->setEnabled(true);
 }
 
-void Lab::brushChoosed() { User::getInstance()->MouseType = MouseType::Brush; }
+void Lab::brushChoosed() {
+  //ui.chooseBrushBtn->setEnabled(false);
+  User::getInstance()->MouseType = MouseType::Brush;
+  //ui.chooseMouseBtn->setEnabled(true);
+}
 
 void Lab::drawingModeChanged(Qt::CheckState state) {
   User::getInstance()->SingleDrawing = state == Qt::CheckState::Checked;

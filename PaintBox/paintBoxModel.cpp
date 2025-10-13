@@ -13,6 +13,12 @@ void PaintBoxModel::addSelection(Chunk* selection) {
   selections_.addElement(selection);
 }
 
+void PaintBoxModel::removeSelection(Chunk* selection) {
+  selections_.removeElement(selection);
+}
+
+bool PaintBoxModel::hasSelection(Chunk* selection) { return selections_.hasElement(selection); }
+
 void PaintBoxModel::clearAllSelections() { selections_.clear(); }
 
 const Storage<CCircle*>& PaintBoxModel::getAllObj() const {

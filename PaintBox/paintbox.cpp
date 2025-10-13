@@ -20,3 +20,6 @@ void PaintBox::paintEvent(QPaintEvent *event) {
 void PaintBox::mousePressEvent(QMouseEvent *event) { emit mousePress(event); }
 
 void PaintBox::mouseMoveEvent(QMouseEvent *event) { emit mouseMove(event); }
+
+void PaintBox::keyPressEvent(QKeyEvent *event) { emit keyPress(event); }
+

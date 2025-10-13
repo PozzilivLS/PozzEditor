@@ -15,11 +15,13 @@ class PaintBox : public QWidget {
   void paintEvent(QPaintEvent *event) override;
   void mousePressEvent(QMouseEvent *event) override;
   void mouseMoveEvent(QMouseEvent *event) override;
+  void keyPressEvent(QKeyEvent *event) override;
 
  signals:
   void mousePress(QMouseEvent *event);
   void mouseMove(QMouseEvent *event);
   void paint(QPaintEvent *event);
+  void keyPress(QKeyEvent *event);
 
  private:
   Ui::PaintBoxClass ui;

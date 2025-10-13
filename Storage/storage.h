@@ -23,6 +23,7 @@ class Storage {
   virtual void addElement(const T& el);
   virtual void removeElement(const T& el);
   virtual void removeElementByIndex(const int index);
+  virtual bool hasElement(const T& el);
   virtual void clear();
   size_t size() const;
 
@@ -52,6 +53,12 @@ void Storage<T>::removeElement(const T& el) {
 template <typename T>
 inline void Storage<T>::removeElementByIndex(const int index) {
   data_.erase(data_.begin() + index);
+}
+
+template <typename T>
+inline bool Storage<T>::hasElement(const T& el) {
+  auto iter = std::find(data_.begin(), data_.end(), el);
+  return iter != data_.end();
 }
 
 template <typename T>

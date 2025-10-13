@@ -15,6 +15,7 @@ class User {
   int BrushSize = 10;
   MouseType MouseType = MouseType::Cursor;
   bool SingleDrawing = false;
+  bool CtrlModifierPressed = false;
  private:
   User();
   static User* instance_;

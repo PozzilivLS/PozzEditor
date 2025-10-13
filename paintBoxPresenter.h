@@ -15,14 +15,16 @@ class PaintBoxPresenter : public QObject {
   void onMousePress(QMouseEvent* event);
   void onMouseMove(QMouseEvent* event);
   void onPaint(QPaintEvent* event);
+  void onKeyPress(QKeyEvent* event);
 
  private:
-  void AddObj(QPoint pos);
-  void PaintObj(const CCircle* obj);
-  void PaintSelection(const Chunk* selection);
-  void ChooseObj(QPoint pos);
-  std::vector<Chunk*> ChooseChunks(QPoint pos);
-  void ResetSelection();
+  void addObj(QPoint pos);
+  void paintObj(const CCircle* obj);
+  void paintSelection(const Chunk* selection);
+  void chooseObj(QPoint pos);
+  std::vector<Chunk*> chooseChunks(QPoint pos);
+  void resetSelection();
+  void deleteSelections();
 
   PaintBox* view_ = nullptr;
   PaintBoxModel* model_ = nullptr;

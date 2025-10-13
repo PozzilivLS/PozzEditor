@@ -18,15 +18,19 @@ void PaintBoxPresenter::subscribeView(PaintBox* view) {
                    SLOT(onMouseMove(QMouseEvent*)));
   QObject::connect(view_, SIGNAL(paint(QPaintEvent*)),
                    SLOT(onPaint(QPaintEvent*)));
+  QObject::connect(view_, SIGNAL(keyPress(QKeyEvent*)),
+                   SLOT(onKeyPress(QKeyEvent*)));
 }
 
 void PaintBoxPresenter::onMousePress(QMouseEvent* event) {
   if (User::getInstance()->MouseType == MouseType::Brush) {
     model_->addChunk();
-    AddObj(event->pos());
+    addObj(event->pos());
   } else if (User::getInstance()->MouseType == MouseType::Cursor) {
-    ResetSelection();
-    ChooseObj(event->pos());
+    if (!User::getInstance()->CtrlModifierPressed) {
+      resetSelection();
+    }
+    chooseObj(event->pos());
   }
 }
 
@@ -34,7 +38,7 @@ void PaintBoxPresenter::onMouseMove(QMouseEvent* event) {
   if (User::getInstance()->MouseType == MouseType::Brush &&
       !User::getInstance()->SingleDrawing) {
     if ((lastPos_ - event->pos()).manhattanLength() >= epsilon_) {
-      AddObj(event->pos());
+      addObj(event->pos());
     }
   }
 }
@@ -42,16 +46,22 @@ void PaintBoxPresenter::onMouseMove(QMouseEvent* event) {
 void PaintBoxPresenter::onPaint(QPaintEvent* event) {
   const Storage<CCircle*>& objects = model_->getAllObj();
   for (const auto& obj : objects) {
-    PaintObj(obj);
+    paintObj(obj);
   }
 
   const Storage<Chunk*>& selections = model_->getAllSelections();
   for (const auto& obj : selections) {
-    PaintSelection(obj);
+    paintSelection(obj);
   }
 }
 
-void PaintBoxPresenter::AddObj(QPoint pos) {
+void PaintBoxPresenter::onKeyPress(QKeyEvent* event) {
+  if (event->modifiers() & Qt::Key_Delete) {
+    deleteSelections();
+  }
+}
+
+void PaintBoxPresenter::addObj(QPoint pos) {
   lastPos_ = pos;
   int rad = User::getInstance()->BrushSize / 2;
   QPoint circlePos(pos.x() - rad, pos.y() - rad);
@@ -62,7 +72,7 @@ void PaintBoxPresenter::AddObj(QPoint pos) {
   view_->update(updateZone);
 }
 
-void PaintBoxPresenter::PaintObj(const CCircle* obj) {
+void PaintBoxPresenter::paintObj(const CCircle* obj) {
   QPainter painter(view_);
   QBrush br(obj->getColor());
   painter.setBrush(br);
@@ -71,18 +81,22 @@ void PaintBoxPresenter::PaintObj(const CCircle* obj) {
   painter.drawEllipse(rect);
 }
 
-void PaintBoxPresenter::PaintSelection(const Chunk* selection) {
+void PaintBoxPresenter::paintSelection(const Chunk* selection) {
   QPainter painter(view_);
   painter.setPen(Qt::blue);
   painter.drawRect(selection->getArea());
 }
 
-void PaintBoxPresenter::ChooseObj(QPoint pos) {
-  std::vector<Chunk*> choosedChunks = ChooseChunks(pos);
+void PaintBoxPresenter::chooseObj(QPoint pos) {
+  std::vector<Chunk*> choosedChunks = chooseChunks(pos);
 
   for (const auto& chunk : choosedChunks) {
     if (chunk->isCircleInPoint(pos)) {
-      model_->addSelection(chunk);
+      if (!model_->hasSelection(chunk)) {
+        model_->addSelection(chunk);
+      } else {
+        model_->removeSelection(chunk);
+      }
 
       QRect updateZone = chunk->getArea().adjusted(-2, -2, 2, 2);
       view_->update(updateZone);
@@ -92,7 +106,7 @@ void PaintBoxPresenter::ChooseObj(QPoint pos) {
   }
 }
 
-std::vector<Chunk*> PaintBoxPresenter::ChooseChunks(QPoint pos) {
+std::vector<Chunk*> PaintBoxPresenter::chooseChunks(QPoint pos) {
   std::vector<Chunk*> res;
 
   const std::vector<Chunk*>& chunks = model_->getChunks();
@@ -106,7 +120,11 @@ std::vector<Chunk*> PaintBoxPresenter::ChooseChunks(QPoint pos) {
   return res;
 }
 
-void PaintBoxPresenter::ResetSelection() {
+void PaintBoxPresenter::resetSelection() {
   model_->clearAllSelections();
   view_->update();
+}
+
+void PaintBoxPresenter::deleteSelections() {
+  
 }

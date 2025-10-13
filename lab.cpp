@@ -32,18 +32,6 @@ void Lab::setUpPaintBox() {
   paintBox_->show();
 }
 
-void Lab::keyPressEvent(QKeyEvent *event) {
-  if (event->modifiers() & Qt::ControlModifier) {
-    User::getInstance()->CtrlModifierPressed = true;
-  }
-}
-
-void Lab::keyReleaseEvent(QKeyEvent *event) {
-  if (!(event->modifiers() & Qt::ControlModifier)) {
-    User::getInstance()->CtrlModifierPressed = false;
-  }
-}
-
 void Lab::brushSizeSliderValueChanged(int value) {
   User::getInstance()->BrushSize = value;
 }

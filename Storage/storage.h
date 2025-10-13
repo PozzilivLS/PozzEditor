@@ -37,7 +37,8 @@ template <typename T>
 Storage<T>::Storage() {}
 
 template <typename T>
-Storage<T>::~Storage() {}
+Storage<T>::~Storage() {
+}
 
 template <typename T>
 void Storage<T>::addElement(const T& el) {
@@ -47,12 +48,14 @@ void Storage<T>::addElement(const T& el) {
 template <typename T>
 void Storage<T>::removeElement(const T& el) {
   auto iter = std::find(data_.begin(), data_.end(), el);
-  data_.erase(iter);
+  if (iter != data_.end())
+    data_.erase(iter);
 }
 
 template <typename T>
 inline void Storage<T>::removeElementByIndex(const int index) {
-  data_.erase(data_.begin() + index);
+  if (index < size())
+    data_.erase(data_.begin() + index);
 }
 
 template <typename T>

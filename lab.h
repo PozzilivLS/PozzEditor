@@ -15,10 +15,6 @@ class Lab : public QMainWindow {
 
   void setUpPaintBox();
  
- protected:
-  void keyPressEvent(QKeyEvent *event) override;
-  void keyReleaseEvent(QKeyEvent *event) override;
-
  private slots:
   void brushSizeSliderValueChanged(int value);
   void cursorChoosed();

@@ -1,8 +1,8 @@
 #include "paintBoxPresenter.h"
 
 #include <CCircle/ccircle.h>
-#include <User/user.h>
 #include <Chunk/chunk.h>
+#include <User/user.h>
 
 #include <QMouseEvent>
 #include <QPainter>
@@ -27,10 +27,15 @@ void PaintBoxPresenter::onMousePress(QMouseEvent* event) {
     model_->addChunk();
     addObj(event->pos());
   } else if (User::getInstance()->MouseType == MouseType::Cursor) {
-    if (!User::getInstance()->CtrlModifierPressed) {
+    if (QApplication::keyboardModifiers() &
+        Qt::ControlModifier) {  // TODO: refactor
+      if (!chooseObj(event->pos())) {
+        resetSelection();
+      }
+    } else {
       resetSelection();
+      chooseObj(event->pos());
     }
-    chooseObj(event->pos());
   }
 }
 
@@ -56,7 +61,7 @@ void PaintBoxPresenter::onPaint(QPaintEvent* event) {
 }
 
 void PaintBoxPresenter::onKeyPress(QKeyEvent* event) {
-  if (event->modifiers() & Qt::Key_Delete) {
+  if (event->key() == Qt::Key_Delete) {
     deleteSelections();
   }
 }
@@ -87,7 +92,9 @@ void PaintBoxPresenter::paintSelection(const Chunk* selection) {
   painter.drawRect(selection->getArea());
 }
 
-void PaintBoxPresenter::chooseObj(QPoint pos) {
+bool PaintBoxPresenter::chooseObj(QPoint pos) {
+  bool res = false;
+
   std::vector<Chunk*> choosedChunks = chooseChunks(pos);
 
   for (const auto& chunk : choosedChunks) {
@@ -101,9 +108,12 @@ void PaintBoxPresenter::chooseObj(QPoint pos) {
       QRect updateZone = chunk->getArea().adjusted(-2, -2, 2, 2);
       view_->update(updateZone);
 
-      return; // DELETE to multiply seletion
+      res = true;
+      return true;  // DELETE to multiply seletion
     }
   }
+
+  return res;
 }
 
 std::vector<Chunk*> PaintBoxPresenter::chooseChunks(QPoint pos) {
@@ -126,5 +136,12 @@ void PaintBoxPresenter::resetSelection() {
 }
 
 void PaintBoxPresenter::deleteSelections() {
-  
+  const Storage<Chunk*>& selections = model_->getAllSelections();
+
+  for (const auto& chunk : selections) {
+    model_->deleteChunk(chunk);
+  }
+
+  model_->clearAllSelections();
+  view_->update();
 }

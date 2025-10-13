@@ -21,7 +21,7 @@ class PaintBoxPresenter : public QObject {
   void addObj(QPoint pos);
   void paintObj(const CCircle* obj);
   void paintSelection(const Chunk* selection);
-  void chooseObj(QPoint pos);
+  bool chooseObj(QPoint pos);
   std::vector<Chunk*> chooseChunks(QPoint pos);
   void resetSelection();
   void deleteSelections();

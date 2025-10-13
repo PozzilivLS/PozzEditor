@@ -1,6 +1,12 @@
 #include "chunk.h"
 
 #include <QDebug>
+Chunk::~Chunk() {
+  for (auto& obj : data_) {
+    delete obj;
+  }
+}
+
 void Chunk::addElement(CCircle* const& el) {
   Storage::addElement(el);
 

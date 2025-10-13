@@ -8,6 +8,7 @@
 class PaintBoxModel {
  public:
   PaintBoxModel();
+  ~PaintBoxModel();
 
   void addCircleInBox(CCircle *object);
   void addChunk();
@@ -15,6 +16,7 @@ class PaintBoxModel {
   void removeSelection(Chunk *selection);
   bool hasSelection(Chunk *selection);
   void clearAllSelections();
+  void deleteChunk(Chunk *chunk);
 
   const std::vector<Chunk *> &getChunks() const;
   const Storage<CCircle *> &getAllObj() const;

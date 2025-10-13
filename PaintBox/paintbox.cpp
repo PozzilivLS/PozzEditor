@@ -1,9 +1,13 @@
 #include "paintbox.h"
 
+#include <QMessageBox>
 #include <QMouseEvent>
 #include <QPainter>
 
-PaintBox::PaintBox(QWidget *parent) : QWidget(parent) { ui.setupUi(this); }
+PaintBox::PaintBox(QWidget *parent) : QWidget(parent) {
+  ui.setupUi(this);
+  setFocusPolicy(Qt::StrongFocus);
+}
 
 PaintBox::~PaintBox() {}
 
@@ -22,4 +26,3 @@ void PaintBox::mousePressEvent(QMouseEvent *event) { emit mousePress(event); }
 void PaintBox::mouseMoveEvent(QMouseEvent *event) { emit mouseMove(event); }
 
 void PaintBox::keyPressEvent(QKeyEvent *event) { emit keyPress(event); }
-

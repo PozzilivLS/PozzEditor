@@ -4,6 +4,8 @@
 
 class Chunk : public Storage<CCircle*> {
  public:
+  ~Chunk() override;
+
   void addElement(CCircle* const& el) override;
 
   bool hasPointIn(QPoint point) const;

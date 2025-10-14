@@ -24,18 +24,18 @@ void PaintBoxPresenter::subscribeView(PaintBox* view) {
 
 void PaintBoxPresenter::onMousePress(QMouseEvent* event) {
   if (User::getInstance()->MouseType == MouseType::Brush) {
+    resetSelection();
     model_->addChunk();
     addObj(event->pos());
   } else if (User::getInstance()->MouseType == MouseType::Cursor) {
-    if (QApplication::keyboardModifiers() &
-        Qt::ControlModifier) {  // TODO: refactor
+    if (QApplication::keyboardModifiers() & Qt::ControlModifier) {
       if (!chooseObj(event->pos())) {
         resetSelection();
       }
     } else {
       resetSelection();
       chooseObj(event->pos());
-    }
+    }  // TODO: refactor
   }
 }
 

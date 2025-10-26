@@ -1,15 +1,28 @@
 #pragma once
 #include <QObject>
+#include <QPoint>
 
-#include "PaintBox/paintbox.h"
-#include "Chunk/chunk.h"
-#include "paintBoxModel.h"
-class PaintBoxPresenter : public QObject {
+#include "Observer/observer.h"
+
+class PaintBox;
+class Chunk;
+class PaintBoxModel;
+class Object;
+class Mouse;
+
+class QMouseEvent;
+class QPaintEvent;
+class QKeyEvent;
+
+class PaintBoxPresenter : public QObject, PaintUpdatable {
   Q_OBJECT
  public:
   PaintBoxPresenter(QObject* parent = nullptr);
 
   void subscribeView(PaintBox* view);
+  void setMouseType(Mouse* type);
+
+  void updateZone() override;
 
  private slots:
   void onMousePress(QMouseEvent* event);
@@ -18,17 +31,8 @@ class PaintBoxPresenter : public QObject {
   void onKeyPress(QKeyEvent* event);
 
  private:
-  void addObj(QPoint pos);
-  void paintObj(const CCircle* obj);
-  void paintSelection(const Chunk* selection);
-  bool chooseObj(QPoint pos);
-  std::vector<Chunk*> chooseChunks(QPoint pos);
-  void resetSelection();
-  void deleteSelections();
+  Mouse* mouseType_ = nullptr;
 
   PaintBox* view_ = nullptr;
   PaintBoxModel* model_ = nullptr;
-
-  QPoint lastPos_;
-  int epsilon_ = 5;
 };

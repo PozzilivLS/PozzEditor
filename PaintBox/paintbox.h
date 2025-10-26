@@ -4,12 +4,23 @@
 
 #include "ui_paintbox.h"
 
+class QPaintEvent;
+class QMouseEvent;
+class QKeyEvent;
+class Object;
+class QPixmap;
+class Chunk;
+
 class PaintBox : public QWidget {
   Q_OBJECT
 
  public:
   PaintBox(QWidget *parent = nullptr);
   ~PaintBox();
+
+  void paintObj(const Object *obj, QPixmap& pixmap);
+  void paintChunk(const Chunk *chunk);
+  void paintSelection(const Chunk *selection);
 
  protected:
   void paintEvent(QPaintEvent *event) override;

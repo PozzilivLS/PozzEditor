@@ -1,9 +1,13 @@
 #include "lab.h"
 
-#include <User/user.h>
-
-#include <QPainter>
 #include <QKeyEvent>
+#include <QPainter>
+
+#include "Mouse/brush.h"
+#include "Mouse/cursor.h"
+#include "PaintBox/paintbox.h"
+#include "User/user.h"
+#include "paintBoxPresenter.h"
 
 Lab::Lab(QWidget *parent) : QMainWindow(parent) {
   ui.setupUi(this);
@@ -18,7 +22,12 @@ Lab::Lab(QWidget *parent) : QMainWindow(parent) {
   setUpPaintBox();
 }
 
-Lab::~Lab() {}
+Lab::~Lab() {
+  if (paintBoxPresenter_) delete paintBoxPresenter_;
+  if (paintBox_) delete paintBox_;
+  if (brush_) delete brush_;
+  if (cursor_) delete cursor_;
+}
 
 void Lab::setUpPaintBox() {
   paintBoxPresenter_ = new PaintBoxPresenter();
@@ -30,23 +39,19 @@ void Lab::setUpPaintBox() {
   ui.centralWidget->layout()->addWidget(paintBox_);
 
   paintBox_->show();
+
+  brush_ = new Brush();
+  cursor_ = new Cursor();
+  paintBoxPresenter_->setMouseType(cursor_);
 }
 
 void Lab::brushSizeSliderValueChanged(int value) {
   User::getInstance()->BrushSize = value;
 }
 
-void Lab::cursorChoosed() {
-  //ui.chooseMouseBtn->setEnabled(false);
-  User::getInstance()->MouseType = MouseType::Cursor;
-  //ui.chooseBrushBtn->setEnabled(true);
-}
+void Lab::cursorChoosed() { paintBoxPresenter_->setMouseType(cursor_); }
 
-void Lab::brushChoosed() {
-  //ui.chooseBrushBtn->setEnabled(false);
-  User::getInstance()->MouseType = MouseType::Brush;
-  //ui.chooseMouseBtn->setEnabled(true);
-}
+void Lab::brushChoosed() { paintBoxPresenter_->setMouseType(brush_); }
 
 void Lab::drawingModeChanged(Qt::CheckState state) {
   User::getInstance()->SingleDrawing = state == Qt::CheckState::Checked;

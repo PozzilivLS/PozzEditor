@@ -1,21 +1,25 @@
 #pragma once
-#include "./CCircle/ccircle.h"
 #include "./Storage/storage.h"
+#include <QPixmap>
+#include <QBitmap>
 
-class Chunk : public Storage<CCircle*> {
+#include "./Shape/object.h"
+
+class QPoint;
+
+class Chunk : public Storage<Object*>, public Object {
  public:
   ~Chunk() override;
 
-  void addElement(CCircle* const& el) override;
+  void addElement(Object* const& el) override;
 
-  bool hasPointIn(QPoint point) const;
+  bool hasPointIn(QPoint point) const override;
   bool isCircleInPoint(QPoint point) const;
 
-  QRect getArea() const;
+  QPixmap& getPixmap();
+  const QPixmap& getPixmap() const;
 
  private:
-  int leftx_ = 0;
-  int upy_ = 0;
-  int rightx = 0;
-  int downy_ = 0;
+  QPixmap cache_;
+  QBitmap mask_;
 };

@@ -1,6 +1,11 @@
 #include "user.h"
 
-User::~User() { instance_ = nullptr; }
+User::~User() {
+  if (instance_) {
+    delete instance_;
+    instance_ = nullptr;
+  }
+}
 
 User* User::getInstance() {
   if (!instance_) {
@@ -10,6 +15,6 @@ User* User::getInstance() {
   return instance_;
 }
 
-User::User() { }
+User::User() {}
 
 User* User::instance_ = nullptr;

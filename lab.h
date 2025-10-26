@@ -2,9 +2,11 @@
 
 #include <QtWidgets/QMainWindow>
 
-#include "PaintBox/paintbox.h"
-#include <paintBoxPresenter.h>
 #include "ui_lab.h"
+
+class PaintBox;
+class PaintBoxPresenter;
+class Mouse;
 
 class Lab : public QMainWindow {
   Q_OBJECT
@@ -22,7 +24,11 @@ class Lab : public QMainWindow {
   void drawingModeChanged(Qt::CheckState state);
 
  private:
-  PaintBox* paintBox_;
-  PaintBoxPresenter* paintBoxPresenter_;
   Ui::LabClass ui;
+
+  PaintBox* paintBox_ = nullptr;
+  PaintBoxPresenter* paintBoxPresenter_ = nullptr;
+
+  Mouse* brush_ = nullptr;
+  Mouse* cursor_ = nullptr;
 };

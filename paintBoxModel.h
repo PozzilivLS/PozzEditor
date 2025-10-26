@@ -1,29 +1,46 @@
 #pragma once
-#include <Chunk/chunk.h>
 
 #include <vector>
+#include <QPoint>
 
-#include "./CCircle/ccircle.h"
+#include "Storage/storage.h";
+#include <QRect>
+#include <QObject>
+#include "Observer/observer.h"
+
+class Chunk;
+class Object;
 
 class PaintBoxModel {
  public:
   PaintBoxModel();
   ~PaintBoxModel();
 
-  void addCircleInBox(CCircle *object);
-  void addChunk();
+  void AddObserver(PaintUpdatable *observer);
+  void RemoveObserver(PaintUpdatable *observer);
+  void NotifyAllObservers();
+
+  void createChunk();
+  void addObj(QPoint pos);
+  bool chooseObj(QPoint pos);
+  void resetSelection();
+  void deleteSelections();
+
+  const Storage<Chunk *> &getChunks() const;
+  const Storage<Chunk *> &getAllSelections() const;
+ 
+ private:
+  void addShapeInLastBox(Object *object);
   void addSelection(Chunk *selection);
   void removeSelection(Chunk *selection);
   bool hasSelection(Chunk *selection);
-  void clearAllSelections();
   void deleteChunk(Chunk *chunk);
+  void clearAllSelections();
+  
+  std::vector<Chunk *> chooseChunks(QPoint pos);
 
-  const std::vector<Chunk *> &getChunks() const;
-  const Storage<CCircle *> &getAllObj() const;
-  const Storage<Chunk *> &getAllSelections() const;
+  std::vector<PaintUpdatable *> observers_;
 
- private:
-  std::vector<Chunk *> chunks_;
-  Storage<CCircle *> globalStorage_;
+  Storage<Chunk *> chunks_;
   Storage<Chunk *> selections_;
 };

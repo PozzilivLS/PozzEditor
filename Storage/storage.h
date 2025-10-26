@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstddef>
-#include <iterator>
 #include <vector>
 
 template <typename T>
@@ -24,10 +22,12 @@ class Storage {
   virtual void removeElement(const T& el);
   virtual void removeElementByIndex(const int index);
   virtual bool hasElement(const T& el);
+  virtual const T& last();
   virtual void clear();
   size_t size() const;
 
   T& operator[](size_t index);
+  const T& operator[](size_t index) const;
 
  protected:
   std::vector<T> data_;
@@ -47,14 +47,12 @@ void Storage<T>::addElement(const T& el) {
 
 template <typename T>
 void Storage<T>::removeElement(const T& el) {
-  auto iter = std::find(data_.begin(), data_.end(), el);
-  if (iter != data_.end())
-    data_.erase(iter);
+  data_.erase(std::remove(data_.begin(), data_.end(), el), data_.end());
 }
 
 template <typename T>
 inline void Storage<T>::removeElementByIndex(const int index) {
-  if (index < size())
+  if (index < size() && index >= 0)
     data_.erase(data_.begin() + index);
 }
 
@@ -75,6 +73,16 @@ void Storage<T>::clear() {
 }
 
 template <typename T>
+const T& Storage<T>::last() {
+  return data_.back();
+}
+
+template <typename T>
 T& Storage<T>::operator[](size_t index) {
+  return data_[index];
+}
+
+template <typename T>
+const T& Storage<T>::operator[](size_t index) const {
   return data_[index];
 }

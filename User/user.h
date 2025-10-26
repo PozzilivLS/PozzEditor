@@ -1,9 +1,4 @@
 #pragma once
-enum class MouseType {
-  Cursor = 0,
-  Brush = 1
-};
-
 class User {
  public:
   ~User();
@@ -13,7 +8,6 @@ class User {
   static User* getInstance();
 
   int BrushSize = 10;
-  MouseType MouseType = MouseType::Cursor;
   bool SingleDrawing = false;
  private:
   User();

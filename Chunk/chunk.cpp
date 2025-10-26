@@ -1,41 +1,46 @@
 #include "chunk.h"
 
 #include <QDebug>
+#include <QPoint>
+#include <QBitmap>
+
 Chunk::~Chunk() {
   for (auto& obj : data_) {
     delete obj;
   }
 }
 
-void Chunk::addElement(CCircle* const& el) {
+void Chunk::addElement(Object* const& el) {
   Storage::addElement(el);
 
   QPoint luPoint = el->getPos();
-  QPoint rdPoint = el->getPos() + QPoint(el->getRad() * 2, el->getRad() * 2);
+  QPoint rdPoint =
+      el->getPos() + QPoint(el->getSize().width(), el->getSize().height());
 
-  
   if (size() == 1) {
-    leftx_ = luPoint.x();
-    upy_ = luPoint.y();
+    pos_ = el->getPos();
+    size_ = el->getSize();
   }
 
-  if (leftx_ > luPoint.x()) {
-    leftx_ = luPoint.x();
-  }
-  if (upy_ > luPoint.y()) {
-    upy_ = luPoint.y();
-  }
-  if (rightx < rdPoint.x()) {
-    rightx = rdPoint.x();
-  }
-  if (downy_ < rdPoint.y()) {
-    downy_ = rdPoint.y();
-  }
+  QRect rect(pos_, size_);
+  rect = rect.united(QRect(luPoint, rdPoint));
+  pos_ = rect.topLeft();
+  size_ = rect.size();
+
+  // TODO: refactor
+  cache_ = QPixmap(size_);
+  mask_ = QBitmap(size_);
+  mask_.clear();
+  cache_.setMask(mask_);
 }
 
 bool Chunk::hasPointIn(QPoint point) const {
-  return ((point.x() > leftx_ && point.x() < rightx) &&
-         (point.y() > upy_ && point.y() < downy_));
+  QRect rect(pos_, size_);
+  if (!rect.contains(point)) {
+    return false;
+  }
+
+  return isCircleInPoint(point);
 }
 
 bool Chunk::isCircleInPoint(QPoint point) const {
@@ -48,7 +53,7 @@ bool Chunk::isCircleInPoint(QPoint point) const {
     return c.x() * c.x() + c.y() * c.y();
   };
 
-  int rad = data_[0]->getRad();
+  //int rad = data_[0]->getRad();
   for (const auto& circle : data_) {
     if (sqrMagnitude(point, circle->getCentralPos()) <= rad * rad) {
       return true;
@@ -58,6 +63,6 @@ bool Chunk::isCircleInPoint(QPoint point) const {
   return false;
 }
 
-QRect Chunk::getArea() const {
-  return QRect(leftx_, upy_, rightx - leftx_, downy_ - upy_);
-}
+QPixmap& Chunk::getPixmap() { return cache_; }
+
+const QPixmap& Chunk::getPixmap() const { return cache_; }

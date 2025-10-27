@@ -11,31 +11,59 @@
 PaintBox::PaintBox(QWidget *parent) : QWidget(parent) {
   ui.setupUi(this);
   setFocusPolicy(Qt::StrongFocus);
+
+  paintMethods_[ShapeType::Rect] = [](Shape *rect, QPainter &painter) {
+    QRect r(rect->getPos(), rect->getSize());
+    painter.drawRect(r);
+  };
+  paintMethods_[ShapeType::Ellipse] = [](Shape *ellipse,
+                                         QPainter &painter) {
+    QRect r(ellipse->getPos(), ellipse->getSize());
+    painter.drawEllipse(r);
+  };
+  paintMethods_[ShapeType::Triangle] = [](Shape *triangle,
+                                          QPainter &painter) {
+    QPolygon poly;
+    QPoint pos = triangle->getPos();
+    QSize size = triangle->getSize();
+    poly << QPoint(pos + QPoint(0, size.height()))
+         << QPoint(pos + QPoint(size.width(), size.height()))
+         << QPoint(pos + QPoint(size.width() / 2, 0));
+    painter.drawPolygon(poly);
+  };
+  paintMethods_[ShapeType::Chunk] = [this](Shape *shapeChunk,
+                                           QPainter &painter) {
+    Chunk *chunk = static_cast<Chunk *>(shapeChunk);
+    if (!chunk->isFixed()) {
+
+      QPainter chunkPainter(&(chunk->getPixmap()));
+      QBrush br(chunk->getColor());
+      chunkPainter.setBrush(br);
+      chunkPainter.setPen(chunk->getColor());
+      for (const auto &obj : *chunk) {
+        paintMethods_[obj->type()](obj, chunkPainter);
+      }
+    }
+
+    painter.drawPixmap(QPoint(), chunk->getPixmap());
+  };
 }
 
 PaintBox::~PaintBox() {}
 
-void PaintBox::paintObj(const Object *obj, QPixmap &pixmap) {
-  QPainter painter(&pixmap);
+
+void PaintBox::paintObj(Shape *obj) {
+  QPainter painter(this);
   QBrush br(obj->getColor());
   painter.setBrush(br);
   painter.setPen(obj->getColor());
-  QRect rect(obj->getPos(), obj->getSize());
-  painter.drawEllipse(rect);
+  paintMethods_[obj->type()](obj, painter);
 }
 
-void PaintBox::paintChunk(const Chunk *chunk) {
-  QPainter painter(this);
-  painter.drawPixmap(QPoint(), chunk->getPixmap());
-}
-
-void PaintBox::paintSelection(const Chunk *selection) {
+void PaintBox::paintSelection(const Shape *selection) {
   QPainter painter(this);
   painter.setPen(Qt::blue);
-  QRect r(selection->getPos(),
-          selection->getPixmap().size() -
-              QSize(selection->getPos().x(), selection->getPos().y()));
-  painter.drawRect(r);
+  painter.drawRect(selection->getBounds());
 }
 
 void PaintBox::paintEvent(QPaintEvent *event) {

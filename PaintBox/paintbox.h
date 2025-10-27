@@ -3,24 +3,25 @@
 #include <QWidget>
 
 #include "ui_paintbox.h"
+#include "Shape/shape.h"
 
 class QPaintEvent;
 class QMouseEvent;
 class QKeyEvent;
-class Object;
+class Shape;
 class QPixmap;
 class Chunk;
 
 class PaintBox : public QWidget {
+  using PaintMethod = std::function<void(Shape *, QPainter &)>;
   Q_OBJECT
 
  public:
   PaintBox(QWidget *parent = nullptr);
   ~PaintBox();
 
-  void paintObj(const Object *obj, QPixmap& pixmap);
-  void paintChunk(const Chunk *chunk);
-  void paintSelection(const Chunk *selection);
+  void paintObj(Shape *obj);
+  void paintSelection(const Shape *selection);
 
  protected:
   void paintEvent(QPaintEvent *event) override;
@@ -35,5 +36,7 @@ class PaintBox : public QWidget {
   void keyPress(QKeyEvent *event);
 
  private:
+  std::unordered_map<ShapeType, PaintMethod> paintMethods_;
+
   Ui::PaintBoxClass ui;
 };

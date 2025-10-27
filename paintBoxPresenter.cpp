@@ -15,7 +15,7 @@ PaintBoxPresenter::PaintBoxPresenter(QObject* parent)
   model_->AddObserver(this);
 }
 
-void PaintBoxPresenter::subscribeView(PaintBox* view) {
+void PaintBoxPresenter::subscribeView(PaintBox* view) { // TODO: View can be null
   view_ = view;
   QObject::connect(view_, SIGNAL(mousePress(QMouseEvent*)),
                    SLOT(onMousePress(QMouseEvent*)));
@@ -47,22 +47,12 @@ void PaintBoxPresenter::onMouseMove(QMouseEvent* event) {
 }
 
 void PaintBoxPresenter::onPaint(QPaintEvent* event) {
-  const Storage<Chunk*>& chunks = model_->getChunks();
-
-  if (chunks.size() == 0) {
-    return;
+  const Storage<Shape *>& shapes = model_->getObjects();
+  for (const auto& shape : shapes) {
+    view_->paintObj(shape);
   }
 
-  for (int i = 0; i < chunks.size() - 1; i++) {
-    view_->paintChunk(chunks[i]);
-  }
-
-  for (const auto& obj : *chunks[chunks.size() - 1]) {
-    view_->paintObj(obj, chunks[chunks.size() - 1]->getPixmap());
-  }
-  view_->paintChunk(chunks[chunks.size() - 1]);
-
-  const Storage<Chunk*>& selections = model_->getAllSelections();
+  const Storage<Shape*>& selections = model_->getAllSelections();
   for (const auto& chunk : selections) {
     view_->paintSelection(chunk);
   }

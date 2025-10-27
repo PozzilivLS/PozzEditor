@@ -21,10 +21,11 @@ class Lab : public QMainWindow {
   void brushSizeSliderValueChanged(int value);
   void cursorChoosed();
   void brushChoosed();
-  void drawingModeChanged(Qt::CheckState state);
 
  private:
   Ui::LabClass ui;
+
+  QButtonGroup* toolsGroup_ = nullptr;
 
   PaintBox* paintBox_ = nullptr;
   PaintBoxPresenter* paintBoxPresenter_ = nullptr;

@@ -7,7 +7,7 @@
 class PaintBox;
 class Chunk;
 class PaintBoxModel;
-class Object;
+class Shape;
 class Mouse;
 
 class QMouseEvent;

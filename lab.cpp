@@ -2,6 +2,7 @@
 
 #include <QKeyEvent>
 #include <QPainter>
+#include <QButtonGroup>
 
 #include "Mouse/brush.h"
 #include "Mouse/cursor.h"
@@ -16,8 +17,15 @@ Lab::Lab(QWidget *parent) : QMainWindow(parent) {
           SLOT(brushSizeSliderValueChanged(int)));
   connect(ui.chooseMouseBtn, SIGNAL(clicked()), SLOT(cursorChoosed()));
   connect(ui.chooseBrushBtn, SIGNAL(clicked()), SLOT(brushChoosed()));
-  connect(ui.singleObjDrawingButton, SIGNAL(checkStateChanged(Qt::CheckState)),
-          SLOT(drawingModeChanged(Qt::CheckState)));
+
+  toolsGroup_ = new QButtonGroup(this);
+  toolsGroup_->setExclusive(true);
+
+  toolsGroup_->addButton(ui.chooseBrushBtn, 0);
+  toolsGroup_->addButton(ui.chooseMouseBtn, 1);
+  toolsGroup_->addButton(ui.rectButton, 2);
+  toolsGroup_->addButton(ui.ellipseButton, 3);
+  toolsGroup_->addButton(ui.triangleButton, 4);
 
   setUpPaintBox();
 }
@@ -49,10 +57,9 @@ void Lab::brushSizeSliderValueChanged(int value) {
   User::getInstance()->BrushSize = value;
 }
 
-void Lab::cursorChoosed() { paintBoxPresenter_->setMouseType(cursor_); }
+void Lab::cursorChoosed() {
+  paintBoxPresenter_->setMouseType(cursor_);
+}
 
 void Lab::brushChoosed() { paintBoxPresenter_->setMouseType(brush_); }
 
-void Lab::drawingModeChanged(Qt::CheckState state) {
-  User::getInstance()->SingleDrawing = state == Qt::CheckState::Checked;
-}

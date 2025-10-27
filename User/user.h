@@ -8,7 +8,6 @@ class User {
   static User* getInstance();
 
   int BrushSize = 10;
-  bool SingleDrawing = false;
  private:
   User();
   static User* instance_;

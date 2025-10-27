@@ -8,13 +8,15 @@
 
 void Cursor::onMousePress(QMouseEvent* event) {
   if (QApplication::keyboardModifiers() & Qt::ControlModifier) {
-    if (!model_->chooseObj(event->pos())) {
+    if (!model_->selectObj(event->pos())) {
       model_->resetSelection();
     }
   } else {
     model_->resetSelection();
-    model_->chooseObj(event->pos());
+    model_->selectObj(event->pos());
   }
 }
 
 void Cursor::onMouseMove(QMouseEvent* event) {}
+
+void Cursor::onMouseRelease(QMouseEvent* event) {}

@@ -3,23 +3,28 @@
 #include <QPixmap>
 #include <QBitmap>
 
-#include "./Shape/object.h"
+#include "./Shape/ellipse.h"
 
 class QPoint;
 
-class Chunk : public Storage<Object*>, public Object {
+class Chunk : public Storage<Ellipse*>, public Shape {
  public:
   ~Chunk() override;
 
-  void addElement(Object* const& el) override;
+  void addElement(Ellipse* const& el) override;
 
+  ShapeType type() const override { return ShapeType::Chunk; }
   bool hasPointIn(QPoint point) const override;
   bool isCircleInPoint(QPoint point) const;
 
   QPixmap& getPixmap();
   const QPixmap& getPixmap() const;
 
+  bool isFixed() const;
+  void setFixed();
  private:
   QPixmap cache_;
   QBitmap mask_;
+
+  bool isFixed_ = false;
 };

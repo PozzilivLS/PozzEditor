@@ -9,4 +9,5 @@ class Cursor : public Mouse {
  public:
   void onMousePress(QMouseEvent* event) override;
   void onMouseMove(QMouseEvent* event) override;
+  void onMouseRelease(QMouseEvent* event) override;
 };

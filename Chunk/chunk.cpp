@@ -10,7 +10,7 @@ Chunk::~Chunk() {
   }
 }
 
-void Chunk::addElement(Object* const& el) {
+void Chunk::addElement(Ellipse* const& el) {
   Storage::addElement(el);
 
   QPoint luPoint = el->getPos();
@@ -28,8 +28,8 @@ void Chunk::addElement(Object* const& el) {
   size_ = rect.size();
 
   // TODO: refactor
-  cache_ = QPixmap(size_);
-  mask_ = QBitmap(size_);
+  cache_ = QPixmap(size_ + QSize(pos_.x(), pos_.y()));
+  mask_ = QBitmap(cache_.size());
   mask_.clear();
   cache_.setMask(mask_);
 }
@@ -53,12 +53,12 @@ bool Chunk::isCircleInPoint(QPoint point) const {
     return c.x() * c.x() + c.y() * c.y();
   };
 
-  //int rad = data_[0]->getRad();
+  int rad = data_[0]->getSize().height() / 2;
   for (const auto& circle : data_) {
     if (sqrMagnitude(point, circle->getCentralPos()) <= rad * rad) {
       return true;
     }
-  }
+  } // TODO: incaps?
 
   return false;
 }
@@ -66,3 +66,7 @@ bool Chunk::isCircleInPoint(QPoint point) const {
 QPixmap& Chunk::getPixmap() { return cache_; }
 
 const QPixmap& Chunk::getPixmap() const { return cache_; }
+
+bool Chunk::isFixed() const { return isFixed_; }
+
+void Chunk::setFixed() { isFixed_ = true; }

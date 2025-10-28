@@ -4,6 +4,8 @@
 #include <QPoint>
 #include <QBitmap>
 
+Chunk::Chunk(QColor color) : Shape(QPoint(), QSize(), color) {}
+
 Chunk::~Chunk() {
   for (auto& obj : data_) {
     delete obj;
@@ -61,6 +63,13 @@ bool Chunk::isCircleInPoint(QPoint point) const {
   } // TODO: incaps?
 
   return false;
+}
+
+void Chunk::changeColor(QColor color) {
+  color_ = color;
+  for (const auto& el : data_) {
+    el->changeColor(color);
+  }
 }
 
 QPixmap& Chunk::getPixmap() { return cache_; }

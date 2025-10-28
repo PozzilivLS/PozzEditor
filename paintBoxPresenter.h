@@ -24,6 +24,8 @@ class PaintBoxPresenter : public QObject, PaintUpdatable {
 
   void updateZone() override;
 
+  bool tryChangeColor(QColor color);
+
  private slots:
   void onMousePress(QMouseEvent* event);
   void onMouseMove(QMouseEvent* event);

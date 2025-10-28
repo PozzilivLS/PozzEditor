@@ -1,17 +1,18 @@
 #include "ellipse.h"
-
 Ellipse::Ellipse(QPoint coordinates, QSize size, QColor color)
     : Shape(coordinates, size, color) {}
 
 bool Ellipse::hasPointIn(QPoint point) const {
-  auto sqrMagnitude = [](QPoint a, QPoint b) {
-    QPoint c = a - b;
-    return c.x() * c.x() + c.y() * c.y();
-  };
-  int rad = size_.height() / 2;
+  QPointF left = pos_ + QPointF(0, size_.height() / 2.0);
+  QPointF right = pos_ + QPointF(size_.width(), size_.height() / 2.0);
+  QPointF up = pos_ + QPointF(size_.width() / 2.0, 0);
+  QPointF down = pos_ + QPointF(size_.width() / 2.0, size_.height());
 
-  if (sqrMagnitude(point, getCentralPos()) <= rad * rad) {
-    return true;
-  }
-  return false;
+  int xc = up.x(), yc = left.y();
+  float a = abs(right.x() - left.x()) / 2.0;
+  float b = abs(down.y() - up.y()) / 2.0;
+
+  float E = ((point.x() - xc) * (point.x() - xc)) / (a * a) +
+            ((point.y() - yc) * (point.y() - yc)) / (b * b);
+  return E <= 1;
 }

@@ -7,8 +7,6 @@
 #include "paintBoxModel.h"
 
 void Brush::onMousePress(QMouseEvent* event) {
-  model_->resetSelection();
-
   activeChunk_ = static_cast<Chunk*>(model_->addObj(ShapeType::Chunk));
 
   model_->createCircleInChunk(activeChunk_, event->pos());

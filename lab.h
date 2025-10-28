@@ -16,11 +16,17 @@ class Lab : public QMainWindow {
   ~Lab();
 
   void setUpPaintBox();
- 
+
+  void colorChanged(QColor color);
+
  private slots:
   void brushSizeSliderValueChanged(int value);
   void cursorChoosed();
   void brushChoosed();
+  void shapeChoosed();
+
+  void changeColor();
+  void changeColorClosed(QColor color);
 
  private:
   Ui::LabClass ui;
@@ -32,4 +38,5 @@ class Lab : public QMainWindow {
 
   Mouse* brush_ = nullptr;
   Mouse* cursor_ = nullptr;
+  Mouse* shapeCreator_ = nullptr;
 };

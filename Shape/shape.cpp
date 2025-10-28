@@ -13,8 +13,10 @@ void Shape::moveDiff(int x, int y) { pos_ += QPoint(x, y); }
 
 void Shape::resizeDiff(int x, int y) {
   size_.setWidth(size_.width() + x);
-  size_.setHeight(size_.height() + x);
+  size_.setHeight(size_.height() + y);
 }
+
+void Shape::changeColor(QColor color) { color_ = color; }
 
 QSize Shape::getSize() const { return size_; }
 

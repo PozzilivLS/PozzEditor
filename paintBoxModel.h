@@ -23,8 +23,11 @@ class PaintBoxModel {
   void RemoveObserver(PaintUpdatable *observer);
   void NotifyAllObservers();
 
-  Shape *addObj(ShapeType type, QPoint pos = QPoint(), QSize size = QSize());
+  Shape *addObj(ShapeType type, QPoint pos = QPoint(), QSize size = QSize(0, 0));
   Shape *createCircleInChunk(Chunk *chunk, QPoint pos);
+
+  void resizeObj(Shape *shape, QSize diff);
+  void moveObj(Shape *shape, QPoint diff);
 
   bool selectObj(QPoint pos);
   void resetSelection();
@@ -32,6 +35,10 @@ class PaintBoxModel {
 
   const Storage<Shape *> &getObjects() const;
   const Storage<Shape *> &getAllSelections() const;
+
+  QRect getSelectedArea() const;
+  bool tryChangeColorForSelected(QColor color);
+  void moveSelections(int xDiff, int yDiff);
 
  private:
   void addSelection(Shape *selection);

@@ -5,7 +5,7 @@
 #include <QRect>
 #include <QSize>
 
-enum class ShapeType { Rect = 0, Ellipse = 1, Triangle = 2, Chunk = 3, None = 100 };
+enum class ShapeType { Rect = 0, Ellipse = 1, Triangle = 2, Line = 3, Chunk = 10, None = 100 };
 
 class Shape {
  public:
@@ -16,6 +16,8 @@ class Shape {
 
   void moveDiff(int x, int y);
   void resizeDiff(int x, int y);
+
+  virtual void changeColor(QColor color);
 
   virtual ShapeType type() const { return ShapeType::None; }
 

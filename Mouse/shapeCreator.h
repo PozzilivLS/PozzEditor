@@ -1,16 +1,17 @@
 #pragma once
+#include "mouse.h"
 #include <QPoint>
 
-#include "mouse.h"
+class Shape;
 
-class PaintBoxModel;
-
-class Cursor : public Mouse {
+class ShapeCreator : public Mouse {
  public:
   void onMousePress(QMouseEvent* event) override;
   void onMouseMove(QMouseEvent* event) override;
   void onMouseRelease(QMouseEvent* event) override;
- 
+
  private:
+  const Shape* currentShape_ = nullptr;
+  QPoint startPos_;
   QPoint lastPos_;
 };

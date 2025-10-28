@@ -2,6 +2,7 @@
 
 #include <QMouseEvent>
 #include <QPainter>
+#include <QColor>
 
 #include "Chunk/chunk.h"
 #include "PaintBox/paintbox.h"
@@ -30,9 +31,15 @@ void PaintBoxPresenter::subscribeView(PaintBox* view) { // TODO: View can be nul
 void PaintBoxPresenter::setMouseType(Mouse* type) {
   mouseType_ = type;
   mouseType_->setModel(model_);
+
+  model_->resetSelection();
 }
 
 void PaintBoxPresenter::updateZone() { view_->update(); }
+
+bool PaintBoxPresenter::tryChangeColor(QColor color) {
+  return model_->tryChangeColorForSelected(color);
+}
 
 void PaintBoxPresenter::onMousePress(QMouseEvent* event) {
   if (mouseType_) {
@@ -52,10 +59,8 @@ void PaintBoxPresenter::onPaint(QPaintEvent* event) {
     view_->paintObj(shape);
   }
 
-  const Storage<Shape*>& selections = model_->getAllSelections();
-  for (const auto& chunk : selections) {
-    view_->paintSelection(chunk);
-  }
+  const QRect selection = model_->getSelectedArea();
+  view_->paintSelection(selection);
 }
 
 void PaintBoxPresenter::onKeyPress(QKeyEvent* event) {

@@ -7,6 +7,7 @@
 
 #include "Chunk/chunk.h"
 #include "Shape/shape.h"
+#include <Shape/line.h>
 
 PaintBox::PaintBox(QWidget *parent) : QWidget(parent) {
   ui.setupUi(this);
@@ -31,6 +32,17 @@ PaintBox::PaintBox(QWidget *parent) : QWidget(parent) {
          << QPoint(pos + QPoint(size.width() / 2, 0));
     painter.drawPolygon(poly);
   };
+  paintMethods_[ShapeType::Line] = [](Shape *line, QPainter &painter) {
+    QPoint p1(line->getPos());
+    QPoint p2(p1.x() + line->getSize().width(), p1.y() + line->getSize().height());
+
+    QPen pen;
+    pen.setColor(painter.brush().color());
+    pen.setWidth(static_cast<Line *>(line)->getLineSize());
+    painter.setPen(pen);
+
+    painter.drawLine(p1, p2);
+  };
   paintMethods_[ShapeType::Chunk] = [this](Shape *shapeChunk,
                                            QPainter &painter) {
     Chunk *chunk = static_cast<Chunk *>(shapeChunk);
@@ -39,7 +51,7 @@ PaintBox::PaintBox(QWidget *parent) : QWidget(parent) {
       QPainter chunkPainter(&(chunk->getPixmap()));
       QBrush br(chunk->getColor());
       chunkPainter.setBrush(br);
-      chunkPainter.setPen(chunk->getColor());
+      chunkPainter.setPen(painter.pen().color());
       for (const auto &obj : *chunk) {
         paintMethods_[obj->type()](obj, chunkPainter);
       }
@@ -56,14 +68,15 @@ void PaintBox::paintObj(Shape *obj) {
   QPainter painter(this);
   QBrush br(obj->getColor());
   painter.setBrush(br);
-  painter.setPen(obj->getColor());
+  painter.setPen(QColor(0, 0, 0, 0));
+
   paintMethods_[obj->type()](obj, painter);
 }
 
-void PaintBox::paintSelection(const Shape *selection) {
+void PaintBox::paintSelection(const QRect selection) {
   QPainter painter(this);
   painter.setPen(Qt::blue);
-  painter.drawRect(selection->getBounds());
+  painter.drawRect(selection);
 }
 
 void PaintBox::paintEvent(QPaintEvent *event) {

@@ -15,8 +15,13 @@ void Cursor::onMousePress(QMouseEvent* event) {
     model_->resetSelection();
     model_->selectObj(event->pos());
   }
+  lastPos_ = event->pos();
 }
 
-void Cursor::onMouseMove(QMouseEvent* event) {}
+void Cursor::onMouseMove(QMouseEvent* event) {
+  QPoint diff = event->pos() - lastPos_;
+  model_->moveSelections(diff.x(), diff.y());
+  lastPos_ = event->pos();
+}
 
 void Cursor::onMouseRelease(QMouseEvent* event) {}

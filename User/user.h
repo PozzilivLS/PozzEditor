@@ -1,4 +1,7 @@
 #pragma once
+#include "Shape/shape.h"
+#include <QColor>
+
 class User {
  public:
   ~User();
@@ -8,6 +11,8 @@ class User {
   static User* getInstance();
 
   int BrushSize = 10;
+  ShapeType ShapeCreatorType = ShapeType::None;
+  QColor Color = QColor(100, 100, 100);
  private:
   User();
   static User* instance_;

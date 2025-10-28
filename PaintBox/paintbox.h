@@ -21,7 +21,7 @@ class PaintBox : public QWidget {
   ~PaintBox();
 
   void paintObj(Shape *obj);
-  void paintSelection(const Shape *selection);
+  void paintSelection(const QRect selection);
 
  protected:
   void paintEvent(QPaintEvent *event) override;

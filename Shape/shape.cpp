@@ -9,20 +9,20 @@ Shape::Shape(QPoint coordinates, QSize size, QColor color)
 }
 
 QColor Shape::getColor() const { return color_; }
-void Shape::move(float x, float y) { pos_ = QPointF(x, y); }
+void Shape::move(int x, int y) { pos_ = QPoint(x, y); }
 
-void Shape::resize(float x, float y) {
+void Shape::resize(int x, int y) {
   size_.setWidth(x);
   size_.setHeight(y);
 }
 
 void Shape::changeColor(QColor color) { color_ = color; }
 
-QSizeF Shape::getSize() const { return size_; }
+QSize Shape::getSize() const { return size_; }
 
-QPointF Shape::getPos() const { return pos_; }
+QPoint Shape::getPos() const { return pos_; }
 
-QPointF Shape::getCentralPos() const {
+QPoint Shape::getCentralPos() const {
   return pos_ + QPoint(size_.width() / 2, size_.height() / 2);
 }
 

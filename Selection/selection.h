@@ -35,7 +35,6 @@ class Selection : public Storage<Shape*> {
   void removeElementByIndex(const int index) override;
   void clear() override;
 
-
   void draw(QPainter& painter) const;
   QRect getArea() const;
 
@@ -43,11 +42,13 @@ class Selection : public Storage<Shape*> {
 
   MousePosState checkMousePos(QPoint pos);
 
+  void moveSelections(int diffX, int diffY);
   bool resizeSelections(int diffX, int diffY);
 
  private:
   void updateRelativeInfo();
 
+  QRect abstractLastRect_;
   ResizePositions currentResizePos_ = ResizePositions::None;
   std::unordered_map<Shape*, std::pair<QPointF, QSizeF>> relativeInfo_;
 };

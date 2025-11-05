@@ -88,7 +88,7 @@ bool Selection::hasObjectInPoint(QPoint point) const {
 }
 
 Selection::MousePosState Selection::checkMousePos(QPoint pos) {
-  auto r = getArea();
+  auto r = abstractLastRect_.isNull() ? getArea() : abstractLastRect_;
 
   QPoint vertexAlpha(-4, -4);
   QSize pivotSize(8, 8);
@@ -119,13 +119,15 @@ Selection::MousePosState Selection::checkMousePos(QPoint pos) {
   for (int i = 0; i < 2; i++) {
     if (vertexBPivots[i].contains(pos)) {
       currentResizePos_ = positions[i * 4].second;
-      return Selection::MousePosState::BCorner;
+      return (r.height() * r.width() > 0) ? Selection::MousePosState::BCorner
+                                          : Selection::MousePosState::FCorner;
     }
   }
   for (int i = 0; i < 2; i++) {
     if (vertexFPivots[i].contains(pos)) {
       currentResizePos_ = positions[2 + i * 4].second;
-      return Selection::MousePosState::FCorner;
+      return (r.height() * r.width() > 0) ? Selection::MousePosState::FCorner
+                                          : Selection::MousePosState::BCorner;
     }
   }
 
@@ -143,6 +145,13 @@ Selection::MousePosState Selection::checkMousePos(QPoint pos) {
   }
 
   return Selection::MousePosState::None;
+}
+
+void Selection::moveSelections(int diffX, int diffY) {
+  for (const auto& obj : *this) {
+    obj->move(obj->getPos().x() + diffX, obj->getPos().y() + diffY);
+  }
+  abstractLastRect_.moveTo(abstractLastRect_.topLeft() + QPoint(diffX, diffY));
 }
 
 bool Selection::resizeSelections(int diffX, int diffY) {
@@ -188,18 +197,21 @@ bool Selection::resizeSelections(int diffX, int diffY) {
       break;
   }
 
-  QRect allArea = getArea();
+  QRect allArea = abstractLastRect_.isNull() ? getArea() : abstractLastRect_;
 
-  QRect newArea = getArea();
+  QRect newArea = allArea;
   newArea.moveTo(newArea.topLeft() + positionDiff);
   newArea.setSize(newArea.size() + sizeDiff);
 
-  qDebug() << positionDiff << sizeDiff;
+  abstractLastRect_ = newArea;
+
+  qDebug() << allArea << newArea;
 
   for (auto& obj : *this) {
     QPointF objRelativePos = relativeInfo_[obj].first;
-
     QSizeF objRelativeSize = relativeInfo_[obj].second;
+
+    qDebug() << objRelativePos << objRelativeSize;
 
     obj->move(
         newArea.topLeft().x() + objRelativePos.x() * newArea.width(),
@@ -210,9 +222,9 @@ bool Selection::resizeSelections(int diffX, int diffY) {
 
   qDebug() << "------------";
 
-  if (allArea.size() == getArea().size()) {
+  /*if (allArea.size() == getArea().size()) {
     return false;
-  }
+  }*/
   return true;
 }
 
@@ -220,6 +232,7 @@ void Selection::updateRelativeInfo() {
   relativeInfo_.clear();
 
   QRect allArea = getArea();
+  abstractLastRect_ = allArea;
 
   for (auto& obj : *this) {
     QPointF objRelativePos(

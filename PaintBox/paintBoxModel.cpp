@@ -137,9 +137,7 @@ bool PaintBoxModel::tryChangeColorForSelected(QColor color) {
 }
 
 void PaintBoxModel::moveSelections(int xDiff, int yDiff) {
-  for (const auto &obj : selections_) {
-    obj->move(obj->getPos().x() + xDiff, obj->getPos().y() + yDiff);
-  }
+  selections_.moveSelections(xDiff, yDiff);
   notifyAllObservers();
 }
 

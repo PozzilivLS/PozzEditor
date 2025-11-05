@@ -15,8 +15,8 @@ class Shape {
 
   virtual ~Shape();
 
-  virtual void move(float x, float y);
-  virtual void resize(float x, float y);
+  virtual void move(int x, int y);
+  virtual void resize(int x, int y);
 
   virtual void changeColor(QColor color);
 
@@ -34,7 +34,7 @@ class Shape {
   virtual void draw(QPainter &painter) const = 0;
 
  protected:
-  QPointF pos_;
-  QSizeF size_;
+  QPoint pos_;
+  QSize size_;
   QColor color_;
 };

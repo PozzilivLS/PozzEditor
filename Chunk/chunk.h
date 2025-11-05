@@ -14,9 +14,13 @@ class Chunk : public Storage<Ellipse*>, public Shape {
 
   void addElement(Ellipse* const& el) override;
 
+  void move(int x, int y) override;
+
   ShapeType type() const override { return ShapeType::Chunk; }
   bool hasPointIn(QPoint point) const override;
   bool isCircleInPoint(QPoint point) const;
+
+  void draw(QPainter& painter) const override;
 
   void changeColor(QColor color) override;
 
@@ -28,6 +32,8 @@ class Chunk : public Storage<Ellipse*>, public Shape {
  private:
   QPixmap cache_;
   QBitmap mask_;
+
+  QPoint diffPos_;
 
   bool isFixed_ = false;
 };

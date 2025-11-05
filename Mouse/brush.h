@@ -11,6 +11,8 @@ class Brush : public Mouse {
   void onMousePress(QMouseEvent* event) override;
   void onMouseMove(QMouseEvent* event) override;
   void onMouseRelease(QMouseEvent* event) override;
+  void onHoverMove(QHoverEvent* event) override;
+  void onHoverLeave(QHoverEvent* event) override;
 
  private:
   Chunk* activeChunk_ = nullptr;

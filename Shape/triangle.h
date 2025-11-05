@@ -8,4 +8,6 @@ class Triangle : public Shape {
   ShapeType type() const override { return ShapeType::Triangle; }
 
   bool hasPointIn(QPoint point) const override;
+
+  void draw(QPainter &painter) const override;
 };

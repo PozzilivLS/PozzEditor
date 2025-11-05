@@ -1,6 +1,7 @@
 #include "brush.h"
 
 #include <QMouseEvent>
+#include <QHoverEvent>
 
 #include "Chunk/chunk.h"
 #include "User/user.h"
@@ -21,3 +22,7 @@ void Brush::onMouseMove(QMouseEvent* event) {
 }
 
 void Brush::onMouseRelease(QMouseEvent* event) { activeChunk_->setFixed(); }
+
+void Brush::onHoverMove(QHoverEvent* event) {}
+
+void Brush::onHoverLeave(QHoverEvent* event) {}

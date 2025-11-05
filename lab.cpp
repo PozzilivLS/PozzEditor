@@ -111,3 +111,7 @@ void Lab::changeColorClosed(QColor color) {
   this->setEnabled(true);
   colorChanged(color);
 }
+
+void Lab::takeSelectionsColor(QColor color) {
+  
+}

@@ -8,4 +8,6 @@ class Rect : public Shape {
   ShapeType type() const override { return ShapeType::Rect; }
 
   bool hasPointIn(QPoint point) const override;
+
+  void draw(QPainter &painter) const override;
 };

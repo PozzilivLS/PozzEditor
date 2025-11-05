@@ -1,4 +1,7 @@
 #include "ellipse.h"
+
+#include <QPainter>
+
 Ellipse::Ellipse(QPoint coordinates, QSize size, QColor color)
     : Shape(coordinates, size, color) {}
 
@@ -15,4 +18,9 @@ bool Ellipse::hasPointIn(QPoint point) const {
   float E = ((point.x() - xc) * (point.x() - xc)) / (a * a) +
             ((point.y() - yc) * (point.y() - yc)) / (b * b);
   return E <= 1;
+}
+
+void Ellipse::draw(QPainter &painter) const {
+  QRect r(pos_, size_);
+  painter.drawEllipse(r);
 }

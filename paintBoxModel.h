@@ -8,6 +8,7 @@
 #include "Observer/observer.h"
 #include "Shape/shape.h"
 #include "Storage/storage.h";
+#include <Selection/selection.h>
 
 class Chunk;
 class Shape;
@@ -19,9 +20,9 @@ class PaintBoxModel {
   PaintBoxModel();
   ~PaintBoxModel();
 
-  void AddObserver(PaintUpdatable *observer);
-  void RemoveObserver(PaintUpdatable *observer);
-  void NotifyAllObservers();
+  void addObserver(PaintUpdatable *observer);
+  void removeObserver(PaintUpdatable *observer);
+  void notifyAllObservers();
 
   Shape *addObj(ShapeType type, QPoint pos = QPoint(), QSize size = QSize(0, 0));
   Shape *createCircleInChunk(Chunk *chunk, QPoint pos);
@@ -34,18 +35,19 @@ class PaintBoxModel {
   void deleteSelections();
 
   const Storage<Shape *> &getObjects() const;
-  const Storage<Shape *> &getAllSelections() const;
+  const Selection &getAllSelections() const;
 
-  QRect getSelectedArea() const;
   bool tryChangeColorForSelected(QColor color);
   void moveSelections(int xDiff, int yDiff);
+  bool resizeSelections(int xDiff, int yDiff);
+
+  Selection::MousePosState checkSelectionBounds(QPoint pos);
+
+  void calculateEdges(QSize size);
+  bool isInWindow(QRect rect);
 
  private:
-  void addSelection(Shape *selection);
-  void removeSelection(Shape *selection);
-  bool hasSelection(Shape *selection);
   void deleteChunk(Shape *chunk);
-  void clearAllSelections();
 
   std::vector<Shape *> chooseObjects(QPoint pos);
 
@@ -54,5 +56,7 @@ class PaintBoxModel {
   std::unordered_map<ShapeType, Creator> creators_;
 
   Storage<Shape *> objects_;
-  Storage<Shape *> selections_;
+  Selection selections_;
+
+  QRect edges_;
 };

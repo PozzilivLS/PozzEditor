@@ -27,6 +27,7 @@ class Lab : public QMainWindow {
 
   void changeColor();
   void changeColorClosed(QColor color);
+  void takeSelectionsColor(QColor color);
 
  private:
   Ui::LabClass ui;

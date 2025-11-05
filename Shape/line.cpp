@@ -41,11 +41,23 @@ QRect Line::getBounds() const {
   QPointF Nab(-Eab.y(), Eab.x());
 
   QPoint diff((Eab + Nab).x(), (Eab + Nab).y());
-  qDebug() << Eab << Nab << diff;
   QRect res(pos_, size_);
   res.adjust(-diff.x(), -diff.y(), diff.x(), diff.y());
 
   return res;
+}
+
+void Line::draw(QPainter& painter) const {
+  QPoint p1(pos_);
+  QPoint p2(p1.x() + size_.width(),
+            p1.y() + size_.height());
+
+  QPen pen;
+  pen.setColor(painter.brush().color());
+  pen.setWidth(lineSize_);
+  painter.setPen(pen);
+
+  painter.drawLine(p1, p2);
 }
 
 int Line::getLineSize() { return lineSize_; }

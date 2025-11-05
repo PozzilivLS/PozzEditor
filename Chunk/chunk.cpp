@@ -36,12 +36,16 @@ void Chunk::addElement(Ellipse* const& el) {
   cache_.setMask(mask_);
 }
 
+void Chunk::move(int x, int y) { 
+  diffPos_ += QPoint(x, y);
+  pos_ += QPoint(x, y);
+}
+
 bool Chunk::hasPointIn(QPoint point) const {
   QRect rect(pos_, size_);
   if (!rect.contains(point)) {
     return false;
   }
-
   return isCircleInPoint(point);
 }
 
@@ -49,6 +53,8 @@ bool Chunk::isCircleInPoint(QPoint point) const {
   if (size() == 0) {
     return false;
   }
+
+  point -= diffPos_;
 
   auto sqrMagnitude = [](QPoint a, QPoint b) {
     QPoint c = a - b;
@@ -63,6 +69,20 @@ bool Chunk::isCircleInPoint(QPoint point) const {
   } // TODO: incaps?
 
   return false;
+}
+
+void Chunk::draw(QPainter& painter) const {
+  if (!isFixed()) {
+    QPainter chunkPainter(&const_cast<QPixmap &>(getPixmap()));
+    QBrush br(getColor());
+    chunkPainter.setBrush(br);
+    chunkPainter.setPen(painter.pen().color());
+    for (const auto& obj : *this) {
+      obj->draw(chunkPainter);
+    }
+  }
+
+  painter.drawPixmap(diffPos_, getPixmap());
 }
 
 void Chunk::changeColor(QColor color) {

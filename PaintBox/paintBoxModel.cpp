@@ -33,16 +33,16 @@ PaintBoxModel::~PaintBoxModel() {
   }
 }
 
-void PaintBoxModel::AddObserver(PaintUpdatable *observer) {
+void PaintBoxModel::addObserver(PaintUpdatable *observer) {
   observers_.emplace_back(observer);
 }
 
-void PaintBoxModel::RemoveObserver(PaintUpdatable *observer) {
+void PaintBoxModel::removeObserver(PaintUpdatable *observer) {
   observers_.erase(std::remove(observers_.begin(), observers_.end(), observer),
                    observers_.end());
 }
 
-void PaintBoxModel::NotifyAllObservers() {
+void PaintBoxModel::notifyAllObservers() {
   for (auto &obs : observers_) {
     obs->updateZone();
   }
@@ -57,7 +57,7 @@ Shape *PaintBoxModel::addObj(ShapeType type, QPoint pos, QSize size) {
 
   objects_.addElement(shape);
 
-  NotifyAllObservers();
+  notifyAllObservers();
 
   return shape;
 }
@@ -71,17 +71,18 @@ bool PaintBoxModel::selectObj(QPoint pos) {
 
   const auto &chunk = choosedChunks.front();
 
-  if (!hasSelection(chunk)) { // TODO: always true
-    addSelection(chunk);
+  if (!selections_.hasElement(chunk)) {  // TODO: always true
+    selections_.addElement(chunk);
   }
 
-  NotifyAllObservers();
+  notifyAllObservers();
   return true;
 }
 
 void PaintBoxModel::resetSelection() {
-  clearAllSelections();
-  NotifyAllObservers();
+  selections_.clear();
+
+  notifyAllObservers();
 }
 
 void PaintBoxModel::deleteSelections() {
@@ -89,8 +90,8 @@ void PaintBoxModel::deleteSelections() {
     deleteChunk(chunk);
   }
 
-  clearAllSelections();
-  NotifyAllObservers();
+  selections_.clear();
+  notifyAllObservers();
 }
 
 Shape *PaintBoxModel::createCircleInChunk(Chunk *chunk, QPoint pos) {
@@ -99,55 +100,29 @@ Shape *PaintBoxModel::createCircleInChunk(Chunk *chunk, QPoint pos) {
   Ellipse *circle = new Ellipse(circlePos, QSize(rad, rad), User::getInstance()->Color);
   chunk->addElement(circle);
 
-  NotifyAllObservers();
+  notifyAllObservers();
 
   return circle;
 }
 
 void PaintBoxModel::resizeObj(Shape *shape, QSize diff) {
-  shape->resizeDiff(diff.width(), diff.height());
-  NotifyAllObservers();
+  shape->resize(shape->getSize().width() + diff.width(),
+                shape->getSize().height() + diff.height());
+  notifyAllObservers();
 }
 
 void PaintBoxModel::moveObj(Shape *shape, QPoint diff) {
-  shape->moveDiff(diff.x(), diff.y());
-  NotifyAllObservers();
+  shape->move(shape->getPos().x() + diff.x(), shape->getPos().y() + diff.y());
+  notifyAllObservers();
 }
-
-void PaintBoxModel::addSelection(Shape *selection) {
-  selections_.addElement(selection);
-}
-
-void PaintBoxModel::removeSelection(Shape *selection) {
-  selections_.removeElement(selection);
-}
-
-bool PaintBoxModel::hasSelection(Shape *selection) {
-  return selections_.hasElement(selection);
-}
-
-void PaintBoxModel::clearAllSelections() { selections_.clear(); }
 
 void PaintBoxModel::deleteChunk(Shape *chunk) {  // TODO: if chunk in selection
   objects_.removeElement(chunk);
   delete chunk;
 }
 
-const Storage<Shape *> &PaintBoxModel::getAllSelections() const {
+const Selection &PaintBoxModel::getAllSelections() const {
   return selections_;
-}
-
-QRect PaintBoxModel::getSelectedArea() const {
-  if (selections_.size() == 0) {
-    return QRect();
-  }
-
-  QRect r(selections_[0]->getBounds());
-
-  for (int i = 1; i < selections_.size(); i++) {
-    r = r.united(selections_[i]->getBounds());
-  }
-  return r;
 }
 
 bool PaintBoxModel::tryChangeColorForSelected(QColor color) {
@@ -163,10 +138,26 @@ bool PaintBoxModel::tryChangeColorForSelected(QColor color) {
 
 void PaintBoxModel::moveSelections(int xDiff, int yDiff) {
   for (const auto &obj : selections_) {
-    obj->moveDiff(xDiff, yDiff);
+    obj->move(obj->getPos().x() + xDiff, obj->getPos().y() + yDiff);
   }
-  NotifyAllObservers();
+  notifyAllObservers();
 }
+
+bool PaintBoxModel::resizeSelections(int xDiff, int yDiff) {
+  bool res = selections_.resizeSelections(xDiff, yDiff);
+  notifyAllObservers();
+  return res;
+}
+
+Selection::MousePosState PaintBoxModel::checkSelectionBounds(QPoint pos) {
+  return selections_.checkMousePos(pos);
+}
+
+void PaintBoxModel::calculateEdges(QSize size) {
+  edges_ = QRect(QPoint(0, 0), size);
+}
+
+bool PaintBoxModel::isInWindow(QRect rect) { return edges_.contains(rect); }
 
 const Storage<Shape *> &PaintBoxModel::getObjects() const { return objects_; }
 

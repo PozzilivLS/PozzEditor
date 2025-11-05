@@ -10,6 +10,8 @@ class Line : public Shape {
   bool hasPointIn(QPoint point) const override;
   QRect getBounds() const override;
 
+  void draw(QPainter &painter) const override;
+
   int getLineSize();
 
  private:

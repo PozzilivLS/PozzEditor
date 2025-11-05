@@ -1,6 +1,6 @@
 #pragma once
 #include "shape.h"
-#include <QPainter>
+
 class Ellipse : public Shape {
  public:
   Ellipse(QPoint coordinates = QPoint(), QSize size = QSize(),
@@ -9,4 +9,6 @@ class Ellipse : public Shape {
   ShapeType type() const override { return ShapeType::Ellipse; }
 
   bool hasPointIn(QPoint point) const override;
+
+  void draw(QPainter &painter) const override;
 };

@@ -4,6 +4,7 @@
 #include <QColor>
 #include <QRect>
 #include <QSize>
+#include <QPainter>
 
 enum class ShapeType { Rect = 0, Ellipse = 1, Triangle = 2, Line = 3, Chunk = 10, None = 100 };
 
@@ -14,8 +15,8 @@ class Shape {
 
   virtual ~Shape();
 
-  void moveDiff(int x, int y);
-  void resizeDiff(int x, int y);
+  virtual void move(float x, float y);
+  virtual void resize(float x, float y);
 
   virtual void changeColor(QColor color);
 
@@ -30,8 +31,10 @@ class Shape {
 
   virtual bool hasPointIn(QPoint point) const = 0;
 
+  virtual void draw(QPainter &painter) const = 0;
+
  protected:
-  QPoint pos_;
-  QSize size_;
+  QPointF pos_;
+  QSizeF size_;
   QColor color_;
 };

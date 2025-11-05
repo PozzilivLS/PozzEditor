@@ -4,16 +4,17 @@
 
 #include "ui_paintbox.h"
 #include "Shape/shape.h"
+#include <Selection/selection.h>
 
 class QPaintEvent;
 class QMouseEvent;
+class QResizeEvent;
+class QEvent;
 class QKeyEvent;
 class Shape;
 class QPixmap;
-class Chunk;
 
 class PaintBox : public QWidget {
-  using PaintMethod = std::function<void(Shape *, QPainter &)>;
   Q_OBJECT
 
  public:
@@ -21,22 +22,29 @@ class PaintBox : public QWidget {
   ~PaintBox();
 
   void paintObj(Shape *obj);
-  void paintSelection(const QRect selection);
+  void paintSelection(const Selection &selection);
 
  protected:
   void paintEvent(QPaintEvent *event) override;
   void mousePressEvent(QMouseEvent *event) override;
   void mouseMoveEvent(QMouseEvent *event) override;
+  void mouseReleaseEvent(QMouseEvent *event) override;
   void keyPressEvent(QKeyEvent *event) override;
+  void resizeEvent(QResizeEvent *event) override;
+
+ protected:
+  bool event(QEvent *event) override;
 
  signals:
   void mousePress(QMouseEvent *event);
   void mouseMove(QMouseEvent *event);
+  void mouseRelease(QMouseEvent *event);
   void paint(QPaintEvent *event);
   void keyPress(QKeyEvent *event);
+  void hoverMove(QHoverEvent *event);
+  void hoverLeave(QHoverEvent *event);
+  void resize(QResizeEvent *event);
 
  private:
-  std::unordered_map<ShapeType, PaintMethod> paintMethods_;
-
   Ui::PaintBoxClass ui;
 };

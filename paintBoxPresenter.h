@@ -1,6 +1,7 @@
 #pragma once
 #include <QObject>
 #include <QPoint>
+#include <QColor>
 
 #include "Observer/observer.h"
 
@@ -12,7 +13,9 @@ class Mouse;
 
 class QMouseEvent;
 class QPaintEvent;
+class QHoverEvent;
 class QKeyEvent;
+class QResizeEvent;
 
 class PaintBoxPresenter : public QObject, PaintUpdatable {
   Q_OBJECT
@@ -26,12 +29,19 @@ class PaintBoxPresenter : public QObject, PaintUpdatable {
 
   bool tryChangeColor(QColor color);
 
+signals:
+  void hasSelections(QColor color);
+
  private slots:
   void onMousePress(QMouseEvent* event);
   void onMouseMove(QMouseEvent* event);
+  void onMouseRelease(QMouseEvent* event);
+  void onHoverMove(QHoverEvent* event);
+  void onHoverLeave(QHoverEvent* event);
   void onPaint(QPaintEvent* event);
   void onKeyPress(QKeyEvent* event);
-
+  void onResize(QResizeEvent* event);
+ 
  private:
   Mouse* mouseType_ = nullptr;
 

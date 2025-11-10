@@ -1,8 +1,8 @@
 #include "chunk.h"
 
+#include <QBitmap>
 #include <QDebug>
 #include <QPoint>
-#include <QBitmap>
 
 Chunk::Chunk(QColor color) : Shape(QPoint(), QSize(), color) {}
 
@@ -28,17 +28,17 @@ void Chunk::addElement(Ellipse* const& el) {
   rect = rect.united(QRect(luPoint, rdPoint));
   pos_ = rect.topLeft();
   size_ = rect.size();
-
-  // TODO: refactor
-  cache_ = QPixmap(size_ + QSize(pos_.x(), pos_.y()));
-  mask_ = QBitmap(cache_.size());
-  mask_.clear();
-  cache_.setMask(mask_);
+  qDebug() << pos_ << size_;
 }
 
-void Chunk::move(int x, int y) { 
-  diffPos_ += QPoint(x, y);
-  pos_ += QPoint(x, y);
+void Chunk::move(int x, int y) {
+  pos_ = QPoint(x, y);
+}
+
+void Chunk::resize(int x, int y) {
+  qDebug() << x << y;
+  size_ = QSize(x, y);
+  cache_ = cache_.scaled(size_);
 }
 
 bool Chunk::hasPointIn(QPoint point) const {
@@ -54,35 +54,33 @@ bool Chunk::isCircleInPoint(QPoint point) const {
     return false;
   }
 
-  point -= diffPos_;
-
   auto sqrMagnitude = [](QPoint a, QPoint b) {
     QPoint c = a - b;
     return c.x() * c.x() + c.y() * c.y();
   };
+
+  point -= pos_;
 
   int rad = data_[0]->getSize().height() / 2;
   for (const auto& circle : data_) {
     if (sqrMagnitude(point, circle->getCentralPos()) <= rad * rad) {
       return true;
     }
-  } // TODO: incaps?
+  }  // TODO: incaps?
 
   return false;
 }
 
 void Chunk::draw(QPainter& painter) const {
   if (!isFixed()) {
-    QPainter chunkPainter(&const_cast<QPixmap &>(getPixmap()));
-    QBrush br(getColor());
-    chunkPainter.setBrush(br);
-    chunkPainter.setPen(painter.pen().color());
     for (const auto& obj : *this) {
-      obj->draw(chunkPainter);
+      obj->draw(painter);
     }
+    return;
   }
 
-  painter.drawPixmap(diffPos_, getPixmap());
+  qDebug() << pos_;
+  painter.drawPixmap(pos_, cache_);
 }
 
 void Chunk::changeColor(QColor color) {
@@ -98,4 +96,20 @@ const QPixmap& Chunk::getPixmap() const { return cache_; }
 
 bool Chunk::isFixed() const { return isFixed_; }
 
-void Chunk::setFixed() { isFixed_ = true; }
+void Chunk::setFixed() {
+  cache_ = QPixmap(size_);
+  mask_ = QBitmap(cache_.size());
+  mask_.clear();
+  cache_.setMask(mask_);
+
+  QPainter chunkPainter(&const_cast<QPixmap&>(cache_));
+  QBrush br(color_);
+  chunkPainter.setBrush(br);
+  chunkPainter.setPen(color_);
+  for (const auto& obj : *this) {
+    obj->move(obj->getPos().x() - pos_.x(), obj->getPos().y() - pos_.y());
+    obj->draw(chunkPainter);
+  }
+
+  isFixed_ = true;
+}

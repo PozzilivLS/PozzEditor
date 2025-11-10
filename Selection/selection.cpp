@@ -205,13 +205,9 @@ bool Selection::resizeSelections(int diffX, int diffY) {
 
   abstractLastRect_ = newArea;
 
-  qDebug() << allArea << newArea;
-
   for (auto& obj : *this) {
     QPointF objRelativePos = relativeInfo_[obj].first;
     QSizeF objRelativeSize = relativeInfo_[obj].second;
-
-    qDebug() << objRelativePos << objRelativeSize;
 
     obj->move(
         newArea.topLeft().x() + objRelativePos.x() * newArea.width(),
@@ -220,11 +216,6 @@ bool Selection::resizeSelections(int diffX, int diffY) {
                 newArea.height() * objRelativeSize.height());
   }
 
-  qDebug() << "------------";
-
-  /*if (allArea.size() == getArea().size()) {
-    return false;
-  }*/
   return true;
 }
 
@@ -232,7 +223,7 @@ void Selection::updateRelativeInfo() {
   relativeInfo_.clear();
 
   QRect allArea = getArea();
-  abstractLastRect_ = allArea;
+  abstractLastRect_ = QRect();
 
   for (auto& obj : *this) {
     QPointF objRelativePos(

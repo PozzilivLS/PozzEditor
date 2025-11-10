@@ -10,17 +10,17 @@
 void Cursor::onMousePress(QMouseEvent* event) {
   lastPos_ = event->pos();
   isChanging_ = true;
-  if (sizeChangeState_ == Selection::MousePosState::None) {
-    const Selection& s = model_->getAllSelections();
-    if (s.hasObjectInPoint(event->pos())) {
-      return;
-    }
 
+  if (sizeChangeState_ == Selection::MousePosState::None) {
     if (QApplication::keyboardModifiers() & Qt::ControlModifier) {
       if (!model_->selectObj(event->pos())) {
         model_->resetSelection();
       }
-    } else {
+      return;
+    }
+
+    const Selection& s = model_->getAllSelections();
+    if (!s.hasObjectInPoint(event->pos())) {
       model_->resetSelection();
       model_->selectObj(event->pos());
     }

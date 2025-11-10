@@ -29,7 +29,7 @@ bool Line::hasPointIn(QPoint point) const {
               sqrt(bp.x() * bp.x() + bp.y() * bp.y()));
   }
 
-  return d <= lineSize_;
+  return d <= lineSize_ / 2;
 }
 
 QRect Line::getBounds() const {
@@ -37,12 +37,12 @@ QRect Line::getBounds() const {
   float l =
       sqrt(size_.width() * size_.width() + size_.height() * size_.height());
 
-  QPointF Eab(ab / l * lineSize_ / 2);
+  QPointF Eab(ab * lineSize_ / 2 / l);
   QPointF Nab(-Eab.y(), Eab.x());
 
   QPoint diff((Eab + Nab).x(), (Eab + Nab).y());
   QRect res(pos_, size_);
-  res.adjust(-diff.x(), -diff.y(), diff.x(), diff.y());
+  //res.adjust(-diff.x(), -diff.y(), diff.x(), diff.y());
 
   return res;
 }

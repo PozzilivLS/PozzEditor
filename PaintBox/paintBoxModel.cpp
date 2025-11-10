@@ -71,8 +71,10 @@ bool PaintBoxModel::selectObj(QPoint pos) {
 
   const auto &chunk = choosedChunks.front();
 
-  if (!selections_.hasElement(chunk)) {  // TODO: always true
+  if (!selections_.hasElement(chunk)) {
     selections_.addElement(chunk);
+  } else {
+    selections_.removeElement(chunk);
   }
 
   notifyAllObservers();
@@ -144,7 +146,7 @@ void PaintBoxModel::moveSelections(int xDiff, int yDiff) {
 bool PaintBoxModel::resizeSelections(int xDiff, int yDiff) {
   bool res = selections_.resizeSelections(xDiff, yDiff);
   notifyAllObservers();
-  return res;
+  return res; // TODO: почему тут
 }
 
 Selection::MousePosState PaintBoxModel::checkSelectionBounds(QPoint pos) {

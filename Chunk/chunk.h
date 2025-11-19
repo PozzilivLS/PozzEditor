@@ -17,7 +17,7 @@ class Chunk : public Storage<Ellipse*>, public Shape {
   void move(int x, int y) override;
   void resize(int x, int y) override;
 
-  ShapeType type() const override { return ShapeType::Chunk; }
+  std::string type() const override { return "Chunk"; }
   bool hasPointIn(QPoint point) const override;
   bool isCircleInPoint(QPoint point) const;
 

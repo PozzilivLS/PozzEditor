@@ -24,7 +24,8 @@ class PaintBoxModel {
   void removeObserver(PaintUpdatable *observer);
   void notifyAllObservers();
 
-  Shape *addObj(ShapeType type, QPoint pos = QPoint(), QSize size = QSize(0, 0));
+  Shape *addObj(std::string type, QPoint pos = QPoint(),
+                QSize size = QSize(0, 0));
   Shape *createCircleInChunk(Chunk *chunk, QPoint pos);
 
   void resizeObj(Shape *shape, QSize diff);
@@ -34,12 +35,15 @@ class PaintBoxModel {
   void resetSelection();
   void deleteSelections();
 
+  void groupSelected();
+  void ungroupSelected();
+
   const Storage<Shape *> &getObjects() const;
   const Selection &getAllSelections() const;
 
   bool tryChangeColorForSelected(QColor color);
   void moveSelections(int xDiff, int yDiff);
-  bool resizeSelections(int xDiff, int yDiff);
+  void resizeSelections(int xDiff, int yDiff);
 
   Selection::MousePosState checkSelectionBounds(QPoint pos);
 
@@ -53,7 +57,7 @@ class PaintBoxModel {
 
   std::vector<PaintUpdatable *> observers_;
 
-  std::unordered_map<ShapeType, Creator> creators_;
+  std::unordered_map<std::string, Creator> creators_;
 
   Storage<Shape *> objects_;
   Selection selections_;

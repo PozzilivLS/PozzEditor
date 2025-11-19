@@ -5,7 +5,7 @@ class Triangle : public Shape {
   Triangle(QPoint coordinates = QPoint(), QSize size = QSize(),
        QColor color = Qt::red);
 
-  ShapeType type() const override { return ShapeType::Triangle; }
+  std::string type() const override { return "Triangle" ; }
 
   bool hasPointIn(QPoint point) const override;
 

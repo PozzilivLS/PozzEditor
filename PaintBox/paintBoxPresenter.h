@@ -42,7 +42,12 @@ signals:
   void onKeyPress(QKeyEvent* event);
   void onResize(QResizeEvent* event);
  
+  void onGroup();
+  void onUngroup();
+
  private:
+  void showContextMenu(QPoint pos);
+
   Mouse* mouseType_ = nullptr;
 
   PaintBox* view_ = nullptr;

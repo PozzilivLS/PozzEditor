@@ -22,5 +22,7 @@ bool Ellipse::hasPointIn(QPoint point) const {
 
 void Ellipse::draw(QPainter &painter) const {
   QRect r(pos_, size_);
+
+  painter.setBrush(color_);
   painter.drawEllipse(r);
 }

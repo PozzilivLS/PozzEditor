@@ -1,29 +1,30 @@
-#include "paintbox.h"
+﻿#include "paintbox.h"
 
+#include <QEvent>
+#include <QMenu>
 #include <QMessageBox>
 #include <QMouseEvent>
-#include <QEvent>
-
 #include <QPainter>
 #include <QPixmap>
 
 #include "Chunk/chunk.h"
+#include "Shape/line.h"
 #include "Shape/shape.h"
-#include <Shape/line.h>
 
 PaintBox::PaintBox(QWidget *parent) : QWidget(parent) {
   ui.setupUi(this);
+
   setFocusPolicy(Qt::StrongFocus);
   setAttribute(Qt::WA_Hover, true);
+
+  setContextMenuPolicy(Qt::CustomContextMenu);
 }
 
 PaintBox::~PaintBox() {}
 
-
 void PaintBox::paintObj(Shape *obj) {
   QPainter painter(this);
-  QBrush br(obj->getColor());
-  painter.setBrush(br);
+
   painter.setPen(QColor(0, 0, 0, 0));
 
   obj->draw(painter);
@@ -45,7 +46,9 @@ void PaintBox::paintEvent(QPaintEvent *event) {
   emit paint(event);
 }
 
-void PaintBox::mousePressEvent(QMouseEvent *event) { emit mousePress(event); }
+void PaintBox::mousePressEvent(QMouseEvent *event) {
+  emit mousePress(event);
+}
 
 void PaintBox::mouseMoveEvent(QMouseEvent *event) { emit mouseMove(event); }
 

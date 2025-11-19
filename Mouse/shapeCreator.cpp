@@ -5,7 +5,7 @@
 #include <QRect>
 
 #include "User/user.h"
-#include "paintBoxModel.h"
+#include "PaintBox/paintBoxModel.h"
 
 void ShapeCreator::onMousePress(QMouseEvent* event) {
   startPos_ = event->pos();

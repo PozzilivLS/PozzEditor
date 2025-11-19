@@ -20,8 +20,7 @@ class Shape {
 
   virtual void changeColor(QColor color);
 
-  virtual ShapeType type() const { return ShapeType::None; }
-
+  virtual std::string type() const { return "None"; }
   QSize getSize() const;
   QPoint getPos() const;
   QPoint getCentralPos() const;

@@ -73,6 +73,7 @@ bool Chunk::isCircleInPoint(QPoint point) const {
 
 void Chunk::draw(QPainter& painter) const {
   if (!isFixed()) {
+    painter.setBrush(color_);
     for (const auto& obj : *this) {
       obj->draw(painter);
     }

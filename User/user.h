@@ -11,7 +11,7 @@ class User {
   static User* getInstance();
 
   int BrushSize = 10;
-  ShapeType ShapeCreatorType = ShapeType::None;
+  std::string ShapeCreatorType = "None";
   QColor Color = QColor(100, 100, 100);
  private:
   User();

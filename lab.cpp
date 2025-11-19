@@ -4,6 +4,7 @@
 #include <QKeyEvent>
 #include <QPainter>
 #include <QColor>
+#include <QColorDialog>
 
 #include "Mouse/brush.h"
 #include "Mouse/cursor.h"
@@ -11,7 +12,7 @@
 #include "PaintBox/paintbox.h"
 #include "User/user.h"
 #include "colorchanger.h"
-#include "paintBoxPresenter.h"
+#include "PaintBox/paintBoxPresenter.h"
 
 Lab::Lab(QWidget *parent) : QMainWindow(parent) {
   ui.setupUi(this);
@@ -88,23 +89,25 @@ void Lab::brushChoosed() { paintBoxPresenter_->setMouseType(brush_); }
 void Lab::shapeChoosed() {
   QString sName = sender()->objectName();
   if (sName == "lineButton") {
-    User::getInstance()->ShapeCreatorType = ShapeType::Line;
+    User::getInstance()->ShapeCreatorType = "Line";
   } else if (sName == "rectButton") {
-    User::getInstance()->ShapeCreatorType = ShapeType::Rect;
+    User::getInstance()->ShapeCreatorType = "Rect";
   } else if (sName == "ellipseButton") {
-    User::getInstance()->ShapeCreatorType = ShapeType::Ellipse;
+    User::getInstance()->ShapeCreatorType = "Ellipse";
   } else if (sName == "triangleButton") {
-    User::getInstance()->ShapeCreatorType = ShapeType::Triangle;
+    User::getInstance()->ShapeCreatorType = "Triangle";
   }
 
   paintBoxPresenter_->setMouseType(shapeCreator_);
 }
 
 void Lab::changeColor() {
-  ColorChanger *cc = new ColorChanger();
-  connect(cc, SIGNAL(closed(QColor)), SLOT(changeColorClosed(QColor)));
-  cc->show();
-  this->setEnabled(false);
+  //ColorChanger *cc = new ColorChanger();
+  //connect(cc, SIGNAL(closed(QColor)), SLOT(changeColorClosed(QColor)));
+  //cc->show();
+  //this->setEnabled(false);
+  QColor c = QColorDialog::getColor();
+  colorChanged(c);
 }
 
 void Lab::changeColorClosed(QColor color) {

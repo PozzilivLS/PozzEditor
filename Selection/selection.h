@@ -43,7 +43,7 @@ class Selection : public Storage<Shape*> {
   MousePosState checkMousePos(QPoint pos);
 
   void moveSelections(int diffX, int diffY);
-  bool resizeSelections(int diffX, int diffY);
+  void resizeSelections(int diffX, int diffY);
 
  private:
   void updateRelativeInfo();

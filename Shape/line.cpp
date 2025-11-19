@@ -53,7 +53,7 @@ void Line::draw(QPainter& painter) const {
             p1.y() + size_.height());
 
   QPen pen;
-  pen.setColor(painter.brush().color());
+  pen.setColor(color_);
   pen.setWidth(lineSize_);
   painter.setPen(pen);
 

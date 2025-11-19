@@ -154,7 +154,7 @@ void Selection::moveSelections(int diffX, int diffY) {
   abstractLastRect_.moveTo(abstractLastRect_.topLeft() + QPoint(diffX, diffY));
 }
 
-bool Selection::resizeSelections(int diffX, int diffY) {
+void Selection::resizeSelections(int diffX, int diffY) {
   QPoint positionDiff(0, 0);
   QSize sizeDiff(0, 0);
 
@@ -209,14 +209,12 @@ bool Selection::resizeSelections(int diffX, int diffY) {
     QPointF objRelativePos = relativeInfo_[obj].first;
     QSizeF objRelativeSize = relativeInfo_[obj].second;
 
+    obj->resize(newArea.width() * objRelativeSize.width(),
+                newArea.height() * objRelativeSize.height());
     obj->move(
         newArea.topLeft().x() + objRelativePos.x() * newArea.width(),
         newArea.topLeft().y() + objRelativePos.y() * newArea.height());
-    obj->resize(newArea.width() * objRelativeSize.width(),
-                newArea.height() * objRelativeSize.height());
   }
-
-  return true;
 }
 
 void Selection::updateRelativeInfo() {

@@ -5,7 +5,7 @@
 #include <QMouseEvent>
 
 #include "User/user.h"
-#include "paintBoxModel.h"
+#include "PaintBox/paintBoxModel.h"
 
 void Cursor::onMousePress(QMouseEvent* event) {
   lastPos_ = event->pos();
@@ -40,21 +40,17 @@ void Cursor::onMouseMove(QMouseEvent* event) {
   } else {
     QPoint diff = event->pos() - lastPos_;
 
-    bool isChanged = model_->resizeSelections(diff.x(), diff.y());
+    model_->resizeSelections(diff.x(), diff.y());
 
     if (!model_->isInWindow(model_->getAllSelections().getArea())) {
       model_->resizeSelections(-diff.x(), -diff.y());
       return;
     }
-    if (isChanged) {
-      lastPos_ = event->pos();
-    }
+    lastPos_ = event->pos();
   }
 }
 
-void Cursor::onMouseRelease(QMouseEvent* event) {
-  isChanging_ = false;
-}
+void Cursor::onMouseRelease(QMouseEvent* event) { isChanging_ = false; }
 
 void Cursor::onHoverMove(QHoverEvent* event) {
   if (!isChanging_) {

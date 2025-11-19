@@ -1,10 +1,13 @@
-#include "paintBoxPresenter.h"
+﻿#include "paintBoxPresenter.h"
+
+#include <Shape/group.h>
 
 #include <QColor>
-#include <QMouseEvent>
 #include <QHoverEvent>
-#include <QResizeEvent>
+#include <QMenu>
+#include <QMouseEvent>
 #include <QPainter>
+#include <QResizeEvent>
 
 #include "Chunk/chunk.h"
 #include "Mouse/mouse.h"
@@ -47,10 +50,10 @@ void PaintBoxPresenter::setMouseType(Mouse* type) {
 }
 
 void PaintBoxPresenter::updateZone() {
-  //const Selection &selections = model_->getAllSelections();  // TODO: !!!!!!! NEEEEEED REFACTOR !!!!!!!
-  //if (selections.size() > 0) {
-  //  emit hasSelections(selections[selections.size() - 1]->getColor());
-  //}
+  // const Selection &selections = model_->getAllSelections();  // TODO: !!!!!!!
+  // NEEEEEED REFACTOR !!!!!!! if (selections.size() > 0) {
+  //   emit hasSelections(selections[selections.size() - 1]->getColor());
+  // }
 
   view_->update();
 }
@@ -62,6 +65,10 @@ bool PaintBoxPresenter::tryChangeColor(QColor color) {
 void PaintBoxPresenter::onMousePress(QMouseEvent* event) {
   if (mouseType_) {
     mouseType_->onMousePress(event);
+  }
+
+  if (event->button() == Qt::RightButton) {
+    showContextMenu(event->pos());
   }
 }
 
@@ -95,7 +102,7 @@ void PaintBoxPresenter::onPaint(QPaintEvent* event) {
     view_->paintObj(shape);
   }
 
-  const Selection &s = model_->getAllSelections();
+  const Selection& s = model_->getAllSelections();
   view_->paintSelection(s);
 }
 
@@ -105,7 +112,8 @@ void PaintBoxPresenter::onKeyPress(QKeyEvent* event) {
   }
 
   {
-    int xMover = (event->key() == Qt::Key_Right) - (event->key() == Qt::Key_Left);
+    int xMover =
+        (event->key() == Qt::Key_Right) - (event->key() == Qt::Key_Left);
     int yMover = (event->key() == Qt::Key_Down) - (event->key() == Qt::Key_Up);
     model_->moveSelections(xMover, yMover);
   }
@@ -113,4 +121,32 @@ void PaintBoxPresenter::onKeyPress(QKeyEvent* event) {
 
 void PaintBoxPresenter::onResize(QResizeEvent* event) {
   model_->calculateEdges(event->size());
+}
+
+void PaintBoxPresenter::onGroup() { model_->groupSelected(); }
+
+void PaintBoxPresenter::onUngroup() { model_->ungroupSelected(); }
+
+void PaintBoxPresenter::showContextMenu(QPoint pos) {
+  QMenu* menu = new QMenu(view_);
+
+  const Selection& s = model_->getAllSelections();
+
+  if (s.size() > 1) {
+    QAction* groupDevice = new QAction(tr("Объединить"), this);
+    connect(groupDevice, SIGNAL(triggered()), SLOT(onGroup()));
+    menu->addAction(groupDevice);
+  }
+
+  if (s.size() == 1 && dynamic_cast<Group*>(s[0])) {
+    QAction* ungroupDevice = new QAction(tr("Разъединить"), this);
+    connect(ungroupDevice, SIGNAL(triggered()), SLOT(onUngroup()));
+    menu->addAction(ungroupDevice);
+  }
+
+  if (menu->actions().size() > 0) {
+    menu->popup(view_->mapToGlobal(pos));
+  } else {
+    delete menu;
+  }
 }

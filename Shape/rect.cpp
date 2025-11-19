@@ -10,5 +10,7 @@ bool Rect::hasPointIn(QPoint point) const {
 
 void Rect::draw(QPainter& painter) const {
   QRect r(pos_, size_);
+
+  painter.setBrush(color_);
   painter.drawRect(r);
 }

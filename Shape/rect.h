@@ -5,7 +5,7 @@ class Rect : public Shape {
   Rect(QPoint coordinates = QPoint(), QSize size = QSize(),
           QColor color = Qt::red);
 
-  ShapeType type() const override { return ShapeType::Rect; }
+  std::string type() const override { return "Rect"; }
 
   bool hasPointIn(QPoint point) const override;
 

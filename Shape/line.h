@@ -5,7 +5,7 @@ class Line : public Shape {
   Line(QPoint coordinates = QPoint(), QSize size = QSize(),
           QColor color = Qt::red);
 
-  ShapeType type() const override { return ShapeType::Line; }
+  std::string type() const override { return "Line"; }
 
   bool hasPointIn(QPoint point) const override;
   QRect getBounds() const override;

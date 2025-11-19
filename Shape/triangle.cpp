@@ -17,5 +17,7 @@ void Triangle::draw(QPainter& painter) const {
   poly << QPoint(pos_ + QPoint(0, size_.height()))
        << QPoint(pos_ + QPoint(size_.width(), size_.height()))
        << QPoint(pos_ + QPoint(size_.width() / 2, 0));
+
+  painter.setBrush(color_);
   painter.drawPolygon(poly);
 }

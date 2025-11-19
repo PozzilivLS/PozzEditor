@@ -8,21 +8,22 @@
 #include "Shape/rect.h"
 #include "Shape/triangle.h"
 #include "User/user.h"
+#include <Shape/group.h>
 
 PaintBoxModel::PaintBoxModel() {
-  creators_[ShapeType::Rect] = [](QPoint pos, QSize size, QColor color) {
+  creators_["Rect"] = [](QPoint pos, QSize size, QColor color) {
     return new Rect(pos, size, color);
   };
-  creators_[ShapeType::Ellipse] = [](QPoint pos, QSize size, QColor color) {
+  creators_["Ellipse"] = [](QPoint pos, QSize size, QColor color) {
     return new Ellipse(pos, size, color);
   };
-  creators_[ShapeType::Triangle] = [](QPoint pos, QSize size, QColor color) {
+  creators_["Triangle"] = [](QPoint pos, QSize size, QColor color) {
     return new Triangle(pos, size, color);
   };
-  creators_[ShapeType::Line] = [](QPoint pos, QSize size, QColor color) {
+  creators_["Line"] = [](QPoint pos, QSize size, QColor color) {
     return new Line(pos, size, color);
   };
-  creators_[ShapeType::Chunk] = [](QPoint pos, QSize size, QColor color) {
+  creators_["Chunk"] = [](QPoint pos, QSize size, QColor color) {
     return new Chunk(color);  // TODO: I dont use args
   };
 }
@@ -48,7 +49,7 @@ void PaintBoxModel::notifyAllObservers() {
   }
 }
 
-Shape *PaintBoxModel::addObj(ShapeType type, QPoint pos, QSize size) {
+Shape *PaintBoxModel::addObj(std::string type, QPoint pos, QSize size) {
   if (creators_.count(type) == 0) {
     return nullptr;
   }
@@ -63,18 +64,21 @@ Shape *PaintBoxModel::addObj(ShapeType type, QPoint pos, QSize size) {
 }
 
 bool PaintBoxModel::selectObj(QPoint pos) {
-  std::vector<Shape *> choosedChunks = chooseObjects(pos);
+  std::vector<Shape *> choosedObjects = chooseObjects(pos);
 
-  if (choosedChunks.empty()) {
+  if (choosedObjects.empty()) {
     return false;
   }
 
-  const auto &chunk = choosedChunks.front();
+  const auto &obj = choosedObjects.front();
 
-  if (!selections_.hasElement(chunk)) {
-    selections_.addElement(chunk);
+  if (!selections_.hasElement(obj)) {
+    selections_.addElement(obj);
+
+    objects_.removeElement(obj);
+    objects_.addElement(obj);
   } else {
-    selections_.removeElement(chunk);
+    selections_.removeElement(obj);
   }
 
   notifyAllObservers();
@@ -96,10 +100,51 @@ void PaintBoxModel::deleteSelections() {
   notifyAllObservers();
 }
 
+void PaintBoxModel::groupSelected() {
+  Storage<Shape *> storage;
+
+  for (auto &obj : selections_) {
+    storage.addElement(obj);
+    objects_.removeElement(obj);
+  }
+
+  Group *group = new Group(std::move(storage));
+  selections_.clear();
+
+  selections_.addElement(group);
+  objects_.addElement(group);
+
+  notifyAllObservers();
+}
+
+void PaintBoxModel::ungroupSelected() {
+  if (selections_.size() != 1 || !dynamic_cast<Group *>(selections_[0])) {
+    return;
+  }
+
+  Group *g = dynamic_cast<Group *>(selections_[0]);
+
+  Storage<Shape *> &objects = g->getAllObjToUngroup();
+
+  objects_.removeElement(g);
+  selections_.removeElement(g);
+
+  for (auto &obj : objects) {
+    objects_.addElement(obj);
+    selections_.addElement(obj);
+  }
+
+  objects.clear();
+  delete g;
+
+  notifyAllObservers();
+}
+
 Shape *PaintBoxModel::createCircleInChunk(Chunk *chunk, QPoint pos) {
   int rad = User::getInstance()->BrushSize;
   QPoint circlePos(pos.x() - rad / 2, pos.y() - rad / 2);
-  Ellipse *circle = new Ellipse(circlePos, QSize(rad, rad), User::getInstance()->Color);
+  Ellipse *circle =
+      new Ellipse(circlePos, QSize(rad, rad), User::getInstance()->Color);
   chunk->addElement(circle);
 
   notifyAllObservers();
@@ -123,9 +168,7 @@ void PaintBoxModel::deleteChunk(Shape *chunk) {  // TODO: if chunk in selection
   delete chunk;
 }
 
-const Selection &PaintBoxModel::getAllSelections() const {
-  return selections_;
-}
+const Selection &PaintBoxModel::getAllSelections() const { return selections_; }
 
 bool PaintBoxModel::tryChangeColorForSelected(QColor color) {
   if (selections_.size() == 0) {
@@ -143,10 +186,9 @@ void PaintBoxModel::moveSelections(int xDiff, int yDiff) {
   notifyAllObservers();
 }
 
-bool PaintBoxModel::resizeSelections(int xDiff, int yDiff) {
-  bool res = selections_.resizeSelections(xDiff, yDiff);
+void PaintBoxModel::resizeSelections(int xDiff, int yDiff) {
+  selections_.resizeSelections(xDiff, yDiff);
   notifyAllObservers();
-  return res; // TODO: почему тут
 }
 
 Selection::MousePosState PaintBoxModel::checkSelectionBounds(QPoint pos) {

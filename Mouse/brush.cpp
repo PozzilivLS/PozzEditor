@@ -5,10 +5,10 @@
 
 #include "Chunk/chunk.h"
 #include "User/user.h"
-#include "paintBoxModel.h"
+#include "PaintBox/paintBoxModel.h"
 
 void Brush::onMousePress(QMouseEvent* event) {
-  activeChunk_ = static_cast<Chunk*>(model_->addObj(ShapeType::Chunk));
+  activeChunk_ = static_cast<Chunk*>(model_->addObj("Chunk"));
 
   model_->createCircleInChunk(activeChunk_, event->pos());
   lastPos_ = event->pos();

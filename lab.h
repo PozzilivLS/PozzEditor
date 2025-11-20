@@ -26,9 +26,9 @@ class Lab : public QMainWindow {
   void shapeChoosed();
 
   void changeColor();
-  void changeColorClosed(QColor color);
-  void takeSelectionsColor(QColor color);
 
+  void openFile();
+  void saveFile();
  private:
   Ui::LabClass ui;
 

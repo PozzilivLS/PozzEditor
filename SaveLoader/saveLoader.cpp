@@ -1,0 +1,35 @@
+#include "saveLoader.h"
+
+#include <QDebug>
+
+#include "ObjectFactory/objectFactory.h"
+#include "Shape/shape.h"
+
+void SaveLoader::save(std::string fileName, Storage<Shape*>& objects) const {
+  FILE* file = nullptr;
+  fopen_s(&file, fileName.c_str(), "w+");
+
+  for (const auto& obj : objects) {
+    qDebug() << "f";
+    obj->save(file);
+  }
+
+  fclose(file);
+}
+
+void SaveLoader::load(std::string fileName, Storage<Shape*>& objects) {
+  FILE* file = nullptr;
+  fopen_s(&file, fileName.c_str(), "r+");
+  char type[128];
+
+  while (fscanf_s(file, "%s", type, (unsigned)_countof(type)) != EOF) {
+    qDebug() << type;
+
+    Shape* obj = ObjectFactory::getInstance()->createObj(type);
+    obj->load(file);
+
+    objects.addElement(obj);
+  }
+
+  fclose(file);
+}

@@ -60,4 +60,20 @@ void Line::draw(QPainter& painter) const {
   painter.drawLine(p1, p2);
 }
 
+void Line::save(FILE* file) {
+  Shape::save(file);
+
+  fprintf_s(file, "%d\n", lineSize_);
+}
+
+void Line::load(FILE* file) {
+  Shape::load(file);
+
+  int lineSize;
+
+  fscanf_s(file, "%d\n", &lineSize);
+
+  lineSize_ = lineSize;
+}
+
 int Line::getLineSize() { return lineSize_; }

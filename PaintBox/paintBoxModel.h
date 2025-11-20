@@ -8,14 +8,13 @@
 #include "Observer/observer.h"
 #include "Shape/shape.h"
 #include "Storage/storage.h";
-#include <Selection/selection.h>
+#include "Selection/selection.h"
+#include "SaveLoader/saveLoader.h"
 
 class Chunk;
 class Shape;
 
 class PaintBoxModel {
-  using Creator = std::function<Shape *(QPoint, QSize, QColor)>;
-
  public:
   PaintBoxModel();
   ~PaintBoxModel();
@@ -50,6 +49,8 @@ class PaintBoxModel {
   void calculateEdges(QSize size);
   bool isInWindow(QRect rect);
 
+  void save(char* name);
+  void load(char *name);
  private:
   void deleteChunk(Shape *chunk);
 
@@ -57,10 +58,10 @@ class PaintBoxModel {
 
   std::vector<PaintUpdatable *> observers_;
 
-  std::unordered_map<std::string, Creator> creators_;
+  SaveLoader saveLoader_;
 
   Storage<Shape *> objects_;
   Selection selections_;
 
-  QRect edges_;
+  QRect borders_;
 };

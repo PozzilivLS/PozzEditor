@@ -12,13 +12,16 @@ class Group : public Shape {
 
   void changeColor(QColor color) override;
 
-  std::string type() const override { return "Group"; }
+  const char *type() const override { return "Group"; }
 
   QRect getBounds() const override;
 
   bool hasPointIn(QPoint point) const override;
 
   void draw(QPainter &painter) const override;
+
+  void save(FILE *file) override;
+  void load(FILE *file) override;
 
   Storage<Shape *>& getAllObjToUngroup();
  private:

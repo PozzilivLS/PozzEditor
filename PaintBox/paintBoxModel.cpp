@@ -1,5 +1,7 @@
 #include "paintBoxModel.h"
 
+#include <Shape/group.h>
+
 #include <QDebug>
 
 #include "Chunk/chunk.h"
@@ -8,25 +10,9 @@
 #include "Shape/rect.h"
 #include "Shape/triangle.h"
 #include "User/user.h"
-#include <Shape/group.h>
+#include "ObjectFactory/objectFactory.h"
 
-PaintBoxModel::PaintBoxModel() {
-  creators_["Rect"] = [](QPoint pos, QSize size, QColor color) {
-    return new Rect(pos, size, color);
-  };
-  creators_["Ellipse"] = [](QPoint pos, QSize size, QColor color) {
-    return new Ellipse(pos, size, color);
-  };
-  creators_["Triangle"] = [](QPoint pos, QSize size, QColor color) {
-    return new Triangle(pos, size, color);
-  };
-  creators_["Line"] = [](QPoint pos, QSize size, QColor color) {
-    return new Line(pos, size, color);
-  };
-  creators_["Chunk"] = [](QPoint pos, QSize size, QColor color) {
-    return new Chunk(color);  // TODO: I dont use args
-  };
-}
+PaintBoxModel::PaintBoxModel() {}
 
 PaintBoxModel::~PaintBoxModel() {
   for (auto &object : objects_) {
@@ -50,11 +36,15 @@ void PaintBoxModel::notifyAllObservers() {
 }
 
 Shape *PaintBoxModel::addObj(std::string type, QPoint pos, QSize size) {
-  if (creators_.count(type) == 0) {
+  Shape *shape = ObjectFactory::getInstance()->createObj(type);
+
+  if (!shape) {
     return nullptr;
   }
 
-  Shape *shape = creators_[type](pos, size, User::getInstance()->Color);
+  shape->move(pos.x(), pos.y());
+  shape->resize(size.width(), size.height());
+  shape->changeColor(User::getInstance()->Color);
 
   objects_.addElement(shape);
 
@@ -196,10 +186,21 @@ Selection::MousePosState PaintBoxModel::checkSelectionBounds(QPoint pos) {
 }
 
 void PaintBoxModel::calculateEdges(QSize size) {
-  edges_ = QRect(QPoint(0, 0), size);
+  borders_ = QRect(QPoint(0, 0), size);
 }
 
-bool PaintBoxModel::isInWindow(QRect rect) { return edges_.contains(rect); }
+bool PaintBoxModel::isInWindow(QRect rect) { return borders_.contains(rect); }
+
+void PaintBoxModel::save(char *name) { saveLoader_.save(name, objects_); }
+
+void PaintBoxModel::load(char* name) {
+  objects_.clear();
+  selections_.clear();
+
+  saveLoader_.load(name, objects_);
+
+  notifyAllObservers();
+}
 
 const Storage<Shape *> &PaintBoxModel::getObjects() const { return objects_; }
 

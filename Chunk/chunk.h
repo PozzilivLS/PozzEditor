@@ -1,9 +1,9 @@
 #pragma once
-#include "./Storage/storage.h"
-#include <QPixmap>
 #include <QBitmap>
+#include <QPixmap>
 
 #include "./Shape/ellipse.h"
+#include "./Storage/storage.h"
 
 class QPoint;
 
@@ -17,7 +17,7 @@ class Chunk : public Storage<Ellipse*>, public Shape {
   void move(int x, int y) override;
   void resize(int x, int y) override;
 
-  std::string type() const override { return "Chunk"; }
+  const char* type() const override { return "Chunk"; }
   bool hasPointIn(QPoint point) const override;
   bool isCircleInPoint(QPoint point) const;
 
@@ -30,8 +30,13 @@ class Chunk : public Storage<Ellipse*>, public Shape {
 
   bool isFixed() const;
   void setFixed();
+
+  void save(FILE* file) override;
+  void load(FILE* file) override;
+
  private:
   QPixmap cache_;
+  QPixmap fixedCache_;
   QBitmap mask_;
 
   bool isFixed_ = false;

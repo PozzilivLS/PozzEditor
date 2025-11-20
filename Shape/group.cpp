@@ -1,5 +1,6 @@
 #include "group.h"
 #include "QDebug"
+#include <ObjectFactory/objectFactory.h>
 
 Group::Group(Storage<Shape *> storage) : objects_(storage) {
   QRect b = getBounds();
@@ -70,6 +71,45 @@ bool Group::hasPointIn(QPoint point) const {
 void Group::draw(QPainter& painter) const {
   for (const auto &obj : objects_) {
     obj->draw(painter);
+  }
+}
+
+void Group::save(FILE *file) {
+  Shape::save(file);
+
+  fprintf_s(file, "%d\n", objects_.size());
+
+  for (auto &obj : objects_) {
+    obj->save(file);
+
+    auto rel = relativeInfo_[obj];
+
+    fprintf_s(file, "%f %f %f %f\n", rel.first.x(), rel.first.y(), rel.second.width(), rel.second.height());
+  }
+}
+
+void Group::load(FILE *file) {
+  qDebug() << "dad";
+  Shape::load(file);
+
+  int size;
+
+  fscanf_s(file, "%d\n", &size);
+
+  relativeInfo_.clear();
+  for (int i = 0; i < size; i++) {
+    char type[128];
+    fscanf_s(file, "%s", type, (unsigned)_countof(type));
+
+    Shape *newObj = ObjectFactory::getInstance()->createObj(type);
+    newObj->load(file);
+
+    objects_.addElement(newObj);
+
+    float relX, relY, relW, relH;
+    fscanf_s(file, "%f %f %f %f\n", &relX, &relY, &relW, &relH);
+
+    relativeInfo_[newObj] = std::make_pair(QPointF(relX, relY), QSizeF(relW, relH));
   }
 }
 

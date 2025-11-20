@@ -20,7 +20,7 @@ class Shape {
 
   virtual void changeColor(QColor color);
 
-  virtual std::string type() const { return "None"; }
+  virtual const char* type() const { return "None"; }
   QSize getSize() const;
   QPoint getPos() const;
   QPoint getCentralPos() const;
@@ -31,6 +31,9 @@ class Shape {
   virtual bool hasPointIn(QPoint point) const = 0;
 
   virtual void draw(QPainter &painter) const = 0;
+
+  virtual void save(FILE* file);
+  virtual void load(FILE* file);
 
  protected:
   QPoint pos_;

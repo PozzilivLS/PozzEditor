@@ -29,6 +29,9 @@ Lab::Lab(QWidget *parent) : QMainWindow(parent) {
 
   connect(ui.colorButton, SIGNAL(clicked()), SLOT(changeColor()));
 
+  connect(ui.openFileAction, SIGNAL(triggered()), SLOT(openFile()));
+  connect(ui.saveFileAction, SIGNAL(triggered()), SLOT(saveFile()));
+
   toolsGroup_ = new QButtonGroup(this);
   toolsGroup_->setExclusive(true);
 
@@ -102,19 +105,10 @@ void Lab::shapeChoosed() {
 }
 
 void Lab::changeColor() {
-  //ColorChanger *cc = new ColorChanger();
-  //connect(cc, SIGNAL(closed(QColor)), SLOT(changeColorClosed(QColor)));
-  //cc->show();
-  //this->setEnabled(false);
   QColor c = QColorDialog::getColor();
   colorChanged(c);
 }
 
-void Lab::changeColorClosed(QColor color) {
-  this->setEnabled(true);
-  colorChanged(color);
-}
+void Lab::openFile() { paintBoxPresenter_->openFile(); }
 
-void Lab::takeSelectionsColor(QColor color) {
-  
-}
+void Lab::saveFile() { paintBoxPresenter_->saveFile(); }

@@ -29,7 +29,10 @@ class PaintBoxPresenter : public QObject, PaintUpdatable {
 
   bool tryChangeColor(QColor color);
 
-signals:
+  void openFile();
+  void saveFile();
+
+ signals:
   void hasSelections(QColor color);
 
  private slots:

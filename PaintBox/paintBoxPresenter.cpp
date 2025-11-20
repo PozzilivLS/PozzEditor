@@ -8,6 +8,7 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QResizeEvent>
+#include <QFileDialog>
 
 #include "Chunk/chunk.h"
 #include "Mouse/mouse.h"
@@ -60,6 +61,24 @@ void PaintBoxPresenter::updateZone() {
 
 bool PaintBoxPresenter::tryChangeColor(QColor color) {
   return model_->tryChangeColorForSelected(color);
+}
+
+void PaintBoxPresenter::openFile() {
+  QString fileName = QFileDialog::getOpenFileName(nullptr, tr("Open File"),
+                                                  "C:/Users/user/Documents",
+                                                  tr("Shapes (*.shps)"));
+
+  if (!fileName.isEmpty())
+    model_->load(fileName.toLocal8Bit().data());
+}
+
+void PaintBoxPresenter::saveFile() {
+  QString fileName = QFileDialog::getSaveFileName(nullptr, tr("Save File"),
+                                                  "C:/Users/user/Documents",
+                                                  tr("Shapes (*.shps)"));
+
+  if (!fileName.isEmpty())
+    model_->save(fileName.toLocal8Bit().data());
 }
 
 void PaintBoxPresenter::onMousePress(QMouseEvent* event) {

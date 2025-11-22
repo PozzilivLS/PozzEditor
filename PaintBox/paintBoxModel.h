@@ -47,7 +47,7 @@ class PaintBoxModel {
   Selection::MousePosState checkSelectionBounds(QPoint pos);
 
   void calculateEdges(QSize size);
-  bool isInWindow(QRect rect);
+  QPoint isInWindow(QRect rect);
 
   void save(char* name);
   void load(char *name);

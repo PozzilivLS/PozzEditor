@@ -16,7 +16,8 @@ class ObjectFactory {
 
   static ObjectFactory* getInstance();
 
-  Shape* createObj(std::string type);
+  void registerType(const std::string& type, Creator cr);
+  Shape* createObj(const std::string& type);
 
  private:
   ObjectFactory();

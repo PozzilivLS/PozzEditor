@@ -164,6 +164,8 @@ void Chunk::load(FILE* file) {
     fscanf_s(file, "%s", type, (unsigned)_countof(type));
 
     Shape* newObj = ObjectFactory::getInstance()->createObj(type);
+    if (!newObj) continue;
+
     newObj->load(file);
 
     addElement(static_cast<Ellipse*>(newObj));

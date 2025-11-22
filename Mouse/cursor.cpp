@@ -33,8 +33,10 @@ void Cursor::onMouseMove(QMouseEvent* event) {
 
     model_->moveSelections(diff.x(), diff.y());
 
-    if (!model_->isInWindow(model_->getAllSelections().getArea())) {
-      model_->moveSelections(-diff.x(), -diff.y());
+    QPoint outside = model_->isInWindow(model_->getAllSelections().getArea());
+    if (!outside.isNull()) {
+      qDebug() << outside;
+      model_->moveSelections(outside.x(), outside.y());
     }
     lastPos_ = event->pos();
   } else {
@@ -42,9 +44,9 @@ void Cursor::onMouseMove(QMouseEvent* event) {
 
     model_->resizeSelections(diff.x(), diff.y());
 
-    if (!model_->isInWindow(model_->getAllSelections().getArea())) {
-      model_->resizeSelections(-diff.x(), -diff.y());
-      return;
+    QPoint outside = model_->isInWindow(model_->getAllSelections().getArea());
+    if (!outside.isNull()) {
+      model_->resizeSelections(outside.x(), outside.y());
     }
     lastPos_ = event->pos();
   }

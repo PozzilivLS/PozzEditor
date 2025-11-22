@@ -13,6 +13,7 @@
 #include "User/user.h"
 #include "colorchanger.h"
 #include "PaintBox/paintBoxPresenter.h"
+#include <Hierarchy/hierarchy.h>
 
 Lab::Lab(QWidget *parent) : QMainWindow(parent) {
   ui.setupUi(this);
@@ -45,6 +46,8 @@ Lab::Lab(QWidget *parent) : QMainWindow(parent) {
   setUpPaintBox();
 
   colorChanged(User::getInstance()->Color);
+
+  Hierarchy h(ui.tree);
 } // TODO: group
 
 Lab::~Lab() {

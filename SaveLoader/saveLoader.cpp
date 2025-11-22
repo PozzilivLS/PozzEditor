@@ -26,6 +26,8 @@ void SaveLoader::load(std::string fileName, Storage<Shape*>& objects) {
     qDebug() << type;
 
     Shape* obj = ObjectFactory::getInstance()->createObj(type);
+    if (!obj) continue;
+
     obj->load(file);
 
     objects.addElement(obj);

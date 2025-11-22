@@ -134,7 +134,7 @@ Shape *PaintBoxModel::createCircleInChunk(Chunk *chunk, QPoint pos) {
   int rad = User::getInstance()->BrushSize;
   QPoint circlePos(pos.x() - rad / 2, pos.y() - rad / 2);
   Ellipse *circle =
-      new Ellipse(circlePos, QSize(rad, rad), User::getInstance()->Color);
+      new Ellipse(circlePos, QSize(rad, rad), User::getInstance()->Color); // HARD ELLIPSE
   chunk->addElement(circle);
 
   notifyAllObservers();
@@ -189,7 +189,20 @@ void PaintBoxModel::calculateEdges(QSize size) {
   borders_ = QRect(QPoint(0, 0), size);
 }
 
-bool PaintBoxModel::isInWindow(QRect rect) { return borders_.contains(rect); }
+QPoint PaintBoxModel::isInWindow(QRect rect) { 
+  if (borders_.contains(rect)) {
+    return QPoint();
+  }
+  
+  rect = rect.normalized();
+
+  int horOut = qMax(0, borders_.left() - rect.left());
+  horOut = qMin(horOut, borders_.right() - rect.right());
+  int verOut = qMax(0, borders_.top() - rect.top());
+  verOut = qMin(verOut, borders_.bottom() - rect.bottom());
+
+  return QPoint(horOut, verOut);
+}
 
 void PaintBoxModel::save(char *name) { saveLoader_.save(name, objects_); }
 

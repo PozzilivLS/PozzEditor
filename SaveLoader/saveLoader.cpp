@@ -5,7 +5,7 @@
 #include "ObjectFactory/objectFactory.h"
 #include "Shape/shape.h"
 
-void SaveLoader::save(std::string fileName, Storage<Shape*>& objects) const {
+void SaveLoader::save(std::string fileName, Storage<Shape *>& objects) const {
   FILE* file = nullptr;
   fopen_s(&file, fileName.c_str(), "w+");
 
@@ -17,7 +17,7 @@ void SaveLoader::save(std::string fileName, Storage<Shape*>& objects) const {
   fclose(file);
 }
 
-void SaveLoader::load(std::string fileName, Storage<Shape*>& objects) {
+void SaveLoader::load(std::string fileName, Storage<Shape *>& objects) {
   FILE* file = nullptr;
   fopen_s(&file, fileName.c_str(), "r+");
   char type[128];
@@ -25,7 +25,7 @@ void SaveLoader::load(std::string fileName, Storage<Shape*>& objects) {
   while (fscanf_s(file, "%s", type, (unsigned)_countof(type)) != EOF) {
     qDebug() << type;
 
-    Shape* obj = ObjectFactory::getInstance()->createObj(type);
+    Shape * obj = ObjectFactory::getInstance()->createObj(type);
     if (!obj) continue;
 
     obj->load(file);

@@ -24,7 +24,7 @@ void ShapeCreator::onMouseMove(QMouseEvent* event) {
   QPoint outside = model_->isInWindow(newObjSize);
   if (outside.isNull()) {
     QPoint diff = event->pos() - lastPos_;
-    model_->resizeObj(const_cast<Shape*>(currentShape_),
+    model_->resizeObj(const_cast<Shape *>(currentShape_),
                       QSize(diff.x(), diff.y()));
 
     lastPos_ = event->pos();

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QDebug>
 #include <vector>
 
 template <typename T>
@@ -12,7 +13,9 @@ class Storage {
 
   typename StorageType::const_iterator begin() const { return data_.begin(); };
   typename StorageType::const_iterator end() const { return data_.end(); };
-  typename StorageType::const_iterator cbegin() const { return data_.cbegin(); };
+  typename StorageType::const_iterator cbegin() const {
+    return data_.cbegin();
+  };
   typename StorageType::const_iterator cend() const { return data_.cend(); };
 
   Storage();
@@ -39,8 +42,7 @@ template <typename T>
 Storage<T>::Storage() {}
 
 template <typename T>
-Storage<T>::~Storage() {
-}
+Storage<T>::~Storage() {}
 
 template <typename T>
 void Storage<T>::addElement(const T& el) {
@@ -49,13 +51,13 @@ void Storage<T>::addElement(const T& el) {
 
 template <typename T>
 void Storage<T>::removeElement(const T& el) {
-  data_.erase(std::remove(data_.begin(), data_.end(), el), data_.end());
+  if (hasElement(el))
+    data_.erase(std::remove(data_.begin(), data_.end(), el), data_.end());
 }
 
 template <typename T>
 inline void Storage<T>::removeElementByIndex(const int index) {
-  if (index < size() && index >= 0)
-    data_.erase(data_.begin() + index);
+  if (index < size() && index >= 0) data_.erase(data_.begin() + index);
 }
 
 template <typename T>

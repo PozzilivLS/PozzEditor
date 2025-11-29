@@ -17,9 +17,12 @@
 #include "User/user.h"
 #include "paintBoxModel.h"
 
+#include "Hierarchy/hierarchy.h"
+#include <Mouse/arrowsManager.h>
+
 PaintBoxPresenter::PaintBoxPresenter(QObject* parent)
     : QObject(parent), model_(new PaintBoxModel()) {
-  model_->addObserver(this);
+  model_->addPaintObserver(this);
 }
 
 void PaintBoxPresenter::subscribeView(
@@ -81,11 +84,16 @@ void PaintBoxPresenter::saveFile() {
     model_->save(fileName.toLocal8Bit().data());
 }
 
+void PaintBoxPresenter::linkHierarchyAndModel(Hierarchy* h) {
+  h->addObserver(model_);
+  model_->addElementsObserver(h);
+}
+
 void PaintBoxPresenter::onMousePress(QMouseEvent* event) {
   if (mouseType_) {
     mouseType_->onMousePress(event);
   }
-
+  
   if (event->button() == Qt::RightButton) {
     showContextMenu(event->pos());
   }
@@ -116,18 +124,31 @@ void PaintBoxPresenter::onHoverLeave(QHoverEvent* event) {
 }
 
 void PaintBoxPresenter::onPaint(QPaintEvent* event) {
-  const Storage<Shape*>& shapes = model_->getObjects();
+  const Storage<Shape *>& shapes = model_->getObjects();
   for (const auto& shape : shapes) {
     view_->paintObj(shape);
   }
 
   const Selection& s = model_->getAllSelections();
   view_->paintSelection(s);
+
+  if (dynamic_cast<ArrowsManager*>(mouseType_)) {
+    const Storage<Arrow*>& arrows = model_->getArrows();
+    for (const auto& arrow : arrows) {
+      view_->paintArrow(arrow);
+    }
+    const Arrow* selA = model_->getSelectedArrow();
+    if (selA) view_->paintSelectedArrow(selA);
+  }
 }
 
 void PaintBoxPresenter::onKeyPress(QKeyEvent* event) {
   if (event->key() == Qt::Key_Delete) {
     model_->deleteSelections();
+
+    if (dynamic_cast<ArrowsManager*>(mouseType_)) {
+      model_->deleteArrow(model_->getSelectedArrow());
+    }
   }
 
   {
@@ -157,7 +178,7 @@ void PaintBoxPresenter::showContextMenu(QPoint pos) {
     menu->addAction(groupDevice);
   }
 
-  if (s.size() == 1 && dynamic_cast<Group*>(s[0])) {
+  if (s.size() == 1 && dynamic_cast<Group *>(s[0])) {
     QAction* ungroupDevice = new QAction(tr("Разъединить"), this);
     connect(ungroupDevice, SIGNAL(triggered()), SLOT(onUngroup()));
     menu->addAction(ungroupDevice);

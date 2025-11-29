@@ -1,10 +1,10 @@
 #pragma once
-#include "mouse.h"
-#include <QPoint>
+#include "Mouse/mouse.h"
 
 class Shape;
+class Arrow;
 
-class ShapeCreator : public Mouse {
+class ArrowsManager : public Mouse {
  public:
   void onMousePress(QMouseEvent* event) override;
   void onMouseMove(QMouseEvent* event) override;
@@ -13,7 +13,6 @@ class ShapeCreator : public Mouse {
   void onHoverLeave(QHoverEvent* event) override;
 
  private:
-  const Shape * currentShape_ = nullptr;
-  QPoint startPos_;
-  QPoint lastPos_;
+  Shape * startObj_ = nullptr;
+  Arrow* createdArrow_ = nullptr;
 };

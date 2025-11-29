@@ -4,6 +4,7 @@
 
 #include "ui_paintbox.h"
 #include "Shape/shape.h"
+#include "Arrows/arrow.h"
 #include <Selection/selection.h>
 
 class QPaintEvent;
@@ -23,6 +24,8 @@ class PaintBox : public QWidget {
 
   void paintObj(Shape *obj);
   void paintSelection(const Selection &selection);
+  void paintArrow(Arrow *arrow);
+  void paintSelectedArrow(const Arrow *arrow);
 
  protected:
   void paintEvent(QPaintEvent *event) override;

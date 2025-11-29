@@ -2,7 +2,7 @@
 #include "QDebug"
 #include <ObjectFactory/objectFactory.h>
 
-Group::Group(Storage<Shape *> storage) : objects_(storage) {
+Group::Group(Storage<Shape *> storage) : Shape(), objects_(storage) {
   QRect b = getBounds();
 
   pos_ = b.topLeft();
@@ -12,13 +12,13 @@ Group::Group(Storage<Shape *> storage) : objects_(storage) {
 }
 
 Group::~Group() {
-  for (auto &object : objects_) {
-    delete object;
-  }
+  notifyAllArrowsAboutDelete();
+
+  objects_.clear();
 }
 
 void Group::move(int x, int y) {
-  pos_ = QPoint(x, y);
+  Shape::move(x, y);
 
   for (auto &object : objects_) {
     QPointF objRelativePos = relativeInfo_[object].first;
@@ -89,7 +89,6 @@ void Group::save(FILE *file) {
 }
 
 void Group::load(FILE *file) {
-  qDebug() << "dad";
   Shape::load(file);
 
   int size;
@@ -115,7 +114,7 @@ void Group::load(FILE *file) {
   }
 }
 
-Storage<Shape *> &Group::getAllObjToUngroup() { return objects_; }
+Storage<Shape *> &Group::getAllObj() { return objects_; }
 
 void Group::updateRelativeInfo() {
   relativeInfo_.clear();

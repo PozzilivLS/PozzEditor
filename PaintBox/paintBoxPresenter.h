@@ -17,6 +17,8 @@ class QHoverEvent;
 class QKeyEvent;
 class QResizeEvent;
 
+class Hierarchy;
+
 class PaintBoxPresenter : public QObject, PaintUpdatable {
   Q_OBJECT
  public:
@@ -31,6 +33,8 @@ class PaintBoxPresenter : public QObject, PaintUpdatable {
 
   void openFile();
   void saveFile();
+
+  void linkHierarchyAndModel(Hierarchy* h);
 
  signals:
   void hasSelections(QColor color);

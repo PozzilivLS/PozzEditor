@@ -7,6 +7,7 @@
 class PaintBox;
 class PaintBoxPresenter;
 class Mouse;
+class Hierarchy;
 
 class Lab : public QMainWindow {
   Q_OBJECT
@@ -26,18 +27,22 @@ class Lab : public QMainWindow {
   void shapeChoosed();
 
   void changeColor();
+  void arrowChoosed();
 
   void openFile();
   void saveFile();
  private:
   Ui::LabClass ui;
 
-  QButtonGroup* toolsGroup_ = nullptr;
+  QButtonGroup * toolsGroup_ = nullptr;
 
   PaintBox* paintBox_ = nullptr;
   PaintBoxPresenter* paintBoxPresenter_ = nullptr;
 
+  Hierarchy* hierarchy_ = nullptr;
+
   Mouse* brush_ = nullptr;
   Mouse* cursor_ = nullptr;
   Mouse* shapeCreator_ = nullptr;
+  Mouse* arrowsManager_ = nullptr;
 };

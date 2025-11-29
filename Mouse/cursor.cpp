@@ -35,7 +35,6 @@ void Cursor::onMouseMove(QMouseEvent* event) {
 
     QPoint outside = model_->isInWindow(model_->getAllSelections().getArea());
     if (!outside.isNull()) {
-      qDebug() << outside;
       model_->moveSelections(outside.x(), outside.y());
     }
     lastPos_ = event->pos();

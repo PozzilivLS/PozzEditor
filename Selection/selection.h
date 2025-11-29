@@ -8,7 +8,7 @@
 class Shape;
 class QEvent;
 
-class Selection : public Storage<Shape*> {
+class Selection : public Storage<Shape *> {
   enum class ResizePositions {
     LeftUp,
     Up,
@@ -30,8 +30,8 @@ class Selection : public Storage<Shape*> {
     None = 4
   };
 
-  void addElement(Shape* const& el) override;
-  void removeElement(Shape* const& el) override;
+  void addElement(Shape * const& el) override;
+  void removeElement(Shape * const& el) override;
   void removeElementByIndex(const int index) override;
   void clear() override;
 
@@ -50,5 +50,5 @@ class Selection : public Storage<Shape*> {
 
   QRect abstractLastRect_;
   ResizePositions currentResizePos_ = ResizePositions::None;
-  std::unordered_map<Shape*, std::pair<QPointF, QSizeF>> relativeInfo_;
+  std::unordered_map<Shape *, std::pair<QPointF, QSizeF>> relativeInfo_;
 };

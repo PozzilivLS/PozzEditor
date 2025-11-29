@@ -12,6 +12,7 @@ Chunk::~Chunk() {
   for (auto& obj : data_) {
     delete obj;
   }
+  // Shape::~Shape();
 }
 
 void Chunk::addElement(Ellipse* const& el) {
@@ -31,8 +32,6 @@ void Chunk::addElement(Ellipse* const& el) {
   pos_ = rect.topLeft();
   size_ = rect.size();
 }
-
-void Chunk::move(int x, int y) { pos_ = QPoint(x, y); }
 
 void Chunk::resize(int x, int y) {
   if (!isFixed_ && fixedCache_.size().width() > 0 &&
@@ -147,12 +146,13 @@ void Chunk::save(FILE* file) {
     obj->save(file);
   }
 }
-
+     
 void Chunk::load(FILE* file) {
-  int xPos, yPos, xSize, ySize, redC, greenC, blueC;
+  int id, xPos, yPos, xSize, ySize, redC, greenC, blueC;
 
-  fscanf_s(file, "%d %d %d %d %d %d %d\n", &xPos, &yPos, &xSize, &ySize, &redC,
+  fscanf_s(file, "%d %d %d %d %d %d %d %d\n", &id, &xPos, &yPos, &xSize, &ySize, &redC,
            &greenC, &blueC);
+  id_ = id;
   int size;
 
   fscanf_s(file, "%d\n", &size);
@@ -163,7 +163,7 @@ void Chunk::load(FILE* file) {
     char type[128];
     fscanf_s(file, "%s", type, (unsigned)_countof(type));
 
-    Shape* newObj = ObjectFactory::getInstance()->createObj(type);
+    Shape * newObj = ObjectFactory::getInstance()->createObj(type);
     if (!newObj) continue;
 
     newObj->load(file);

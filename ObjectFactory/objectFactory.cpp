@@ -6,7 +6,7 @@ void ObjectFactory::registerType(const std::string& type, Creator cr) {
   creators_[type] = cr;
 }
 
-Shape* ObjectFactory::createObj(const std::string& type) {
+Shape * ObjectFactory::createObj(const std::string& type) {
   if (creators_.count(type) == 0) {
     return nullptr;
   }

@@ -8,28 +8,28 @@
 
 #include "Shape/shape.h"
 
-void Selection::addElement(Shape* const& el) {
-  Storage<Shape*>::addElement(el);
+void Selection::addElement(Shape * const& el) {
+  Storage<Shape *>::addElement(el);
   updateRelativeInfo();
 }
 
-void Selection::removeElement(Shape* const& el) {
-  Storage<Shape*>::removeElement(el);
+void Selection::removeElement(Shape * const& el) {
+  Storage<Shape *>::removeElement(el);
   updateRelativeInfo();
 }
 
 void Selection::removeElementByIndex(const int index) {
-  Storage<Shape*>::removeElementByIndex(index);
+  Storage<Shape *>::removeElementByIndex(index);
   updateRelativeInfo();
 }
 
 void Selection::clear() {
-  Storage<Shape*>::clear();
+  Storage<Shape *>::clear();
   updateRelativeInfo();
 }
 
 void Selection::draw(QPainter& painter) const {
-  if (Storage<Shape*>::size() == 0) {
+  if (Storage<Shape *>::size() == 0) {
     return;
   }
 
@@ -66,13 +66,13 @@ void Selection::draw(QPainter& painter) const {
 }
 
 QRect Selection::getArea() const {
-  if (Storage<Shape*>::size() == 0) {
+  if (Storage<Shape *>::size() == 0) {
     return QRect();
   }
 
   QRect r(at(0)->getBounds());
 
-  for (int i = 1; i < Storage<Shape*>::size(); i++) {
+  for (int i = 1; i < Storage<Shape *>::size(); i++) {
     r = r.united(at(i)->getBounds());
   }
   return r;

@@ -36,6 +36,22 @@ void PaintBox::paintSelection(const Selection &selection) {
   selection.draw(painter);
 }
 
+void PaintBox::paintArrow(Arrow *arrow) {
+  QPainter painter(this);
+  QPen pen(Qt::gray);
+  pen.setWidth(arrow->ArrowSize);
+  painter.setPen(pen);
+  arrow->draw(painter);
+}
+
+void PaintBox::paintSelectedArrow(const Arrow *arrow) {
+  QPainter painter(this);
+  QPen pen(Qt::darkRed);
+  pen.setWidth(arrow->ArrowSize);
+  painter.setPen(pen);
+  arrow->draw(painter);
+}
+
 void PaintBox::paintEvent(QPaintEvent *event) {
   QPainter painter(this);
   QBrush br(Qt::darkGray, Qt::SolidPattern);

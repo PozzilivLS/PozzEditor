@@ -7,7 +7,7 @@
 class Shape;
 
 class ObjectFactory {
-  using Creator = std::function<Shape*()>;
+  using Creator = std::function<Shape *()>;
 
  public:
   ~ObjectFactory();
@@ -17,7 +17,7 @@ class ObjectFactory {
   static ObjectFactory* getInstance();
 
   void registerType(const std::string& type, Creator cr);
-  Shape* createObj(const std::string& type);
+  Shape * createObj(const std::string& type);
 
  private:
   ObjectFactory();

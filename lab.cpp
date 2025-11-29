@@ -9,11 +9,13 @@
 #include "Mouse/brush.h"
 #include "Mouse/cursor.h"
 #include "Mouse/shapeCreator.h"
+#include "Mouse/arrowsManager.h"
 #include "PaintBox/paintbox.h"
 #include "User/user.h"
 #include "colorchanger.h"
 #include "PaintBox/paintBoxPresenter.h"
-#include <Hierarchy/hierarchy.h>
+
+#include "Hierarchy/hierarchy.h"
 
 Lab::Lab(QWidget *parent) : QMainWindow(parent) {
   ui.setupUi(this);
@@ -22,6 +24,7 @@ Lab::Lab(QWidget *parent) : QMainWindow(parent) {
           SLOT(brushSizeSliderValueChanged(int)));
   connect(ui.chooseMouseBtn, SIGNAL(clicked()), SLOT(cursorChoosed()));
   connect(ui.chooseBrushBtn, SIGNAL(clicked()), SLOT(brushChoosed()));
+  connect(ui.arrowsBtn, SIGNAL(clicked()), SLOT(arrowChoosed()));
 
   connect(ui.lineButton, SIGNAL(clicked()), SLOT(shapeChoosed()));
   connect(ui.rectButton, SIGNAL(clicked()), SLOT(shapeChoosed()));
@@ -42,12 +45,14 @@ Lab::Lab(QWidget *parent) : QMainWindow(parent) {
   toolsGroup_->addButton(ui.rectButton, 3);
   toolsGroup_->addButton(ui.ellipseButton, 4);
   toolsGroup_->addButton(ui.triangleButton, 5);
+  toolsGroup_->addButton(ui.arrowsBtn, 6);
 
   setUpPaintBox();
 
   colorChanged(User::getInstance()->Color);
 
-  Hierarchy h(ui.tree);
+  hierarchy_ = new Hierarchy(ui.tree);
+  paintBoxPresenter_->linkHierarchyAndModel(hierarchy_);
 } // TODO: group
 
 Lab::~Lab() {
@@ -55,6 +60,8 @@ Lab::~Lab() {
   if (paintBox_) delete paintBox_;
   if (brush_) delete brush_;
   if (cursor_) delete cursor_;
+  if (arrowsManager_) delete arrowsManager_;
+  if (hierarchy_) delete hierarchy_;
 }
 
 void Lab::setUpPaintBox() {
@@ -71,6 +78,7 @@ void Lab::setUpPaintBox() {
   brush_ = new Brush();
   cursor_ = new Cursor();
   shapeCreator_ = new ShapeCreator();
+  arrowsManager_ = new ArrowsManager();
   paintBoxPresenter_->setMouseType(cursor_);
 }
 
@@ -111,6 +119,8 @@ void Lab::changeColor() {
   QColor c = QColorDialog::getColor();
   colorChanged(c);
 }
+
+void Lab::arrowChoosed() { paintBoxPresenter_->setMouseType(arrowsManager_); }
 
 void Lab::openFile() { paintBoxPresenter_->openFile(); }
 

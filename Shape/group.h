@@ -23,7 +23,8 @@ class Group : public Shape {
   void save(FILE *file) override;
   void load(FILE *file) override;
 
-  Storage<Shape *>& getAllObjToUngroup();
+  Storage<Shape *>& getAllObj();
+
  private:
   void updateRelativeInfo();
 

@@ -14,7 +14,6 @@ class Chunk : public Storage<Ellipse*>, public Shape {
 
   void addElement(Ellipse* const& el) override;
 
-  void move(int x, int y) override;
   void resize(int x, int y) override;
 
   const char* type() const override { return "Chunk"; }

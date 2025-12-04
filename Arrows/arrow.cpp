@@ -57,7 +57,7 @@ void Arrow::notifyStorageAboutDeletion(ShapeType type) {
 
 void Arrow::notifyStorageAboutMove(int dx, int dy) {
   for (auto& obs : observers_) {
-    obs->provideArrowMove(to_, dx, dy);
+    obs->provideArrowMove(this, dx, dy);
   }
 }
 

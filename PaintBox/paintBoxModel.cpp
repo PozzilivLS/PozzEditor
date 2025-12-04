@@ -66,12 +66,25 @@ void PaintBoxModel::provideArrowDeletion(Arrow *arrow, Arrow::ShapeType type) {
   deleteArrow(arrow);
 }
 
-void PaintBoxModel::provideArrowMove(Shape *shape, int dx, int dy) {
-  QPoint posTo(shape->getPos().x() + dx, shape->getPos().y() + dy);
-  QRect newObjPos(posTo, shape->getSize());
+void PaintBoxModel::provideArrowMove(Arrow *arrow, int dx, int dy) {
+  if (movedArrows_.hasElement(arrow)) {
+    movedArrows_.clear();
+    movedShapes_.clear();
+  }
+
+  movedShapes_.addElement(arrow->from());
+  movedArrows_.addElement(arrow);
+
+  if (movedShapes_.hasElement(arrow->to())) {
+    return;
+  }
+  movedShapes_.addElement(arrow->to());
+
+  QPoint posTo(arrow->to()->getPos().x() + dx, arrow->to()->getPos().y() + dy);
+  QRect newObjPos(posTo, arrow->to()->getSize());
 
   if (isInWindow(newObjPos).isNull()) {
-    shape->move(posTo.x(), posTo.y());
+    arrow->to()->move(posTo.x(), posTo.y());
   }
 }
 

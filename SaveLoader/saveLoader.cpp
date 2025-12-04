@@ -10,7 +10,6 @@ void SaveLoader::save(std::string fileName, Storage<Shape *>& objects) const {
   fopen_s(&file, fileName.c_str(), "w+");
 
   for (const auto& obj : objects) {
-    qDebug() << "f";
     obj->save(file);
   }
 
@@ -23,8 +22,6 @@ void SaveLoader::load(std::string fileName, Storage<Shape *>& objects) {
   char type[128];
 
   while (fscanf_s(file, "%s", type, (unsigned)_countof(type)) != EOF) {
-    qDebug() << type;
-
     Shape * obj = ObjectFactory::getInstance()->createObj(type);
     if (!obj) continue;
 

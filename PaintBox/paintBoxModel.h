@@ -26,7 +26,7 @@ class PaintBoxModel : public ElementsObserver, public ArrowObserver {
   void notifyAllElementsObserversOnUpdate();
 
   void provideArrowDeletion(Arrow *arrow, Arrow::ShapeType type) override;
-  void provideArrowMove(Shape *shape, int dx, int dy) override;
+  void provideArrowMove(Arrow *arrow, int dx, int dy) override;
 
   void addPaintObserver(PaintUpdatable *observer);
   void removePaintObserver(PaintUpdatable *observer);
@@ -84,7 +84,8 @@ class PaintBoxModel : public ElementsObserver, public ArrowObserver {
   Selection selections_;
   
   Storage<Arrow *> arrows_;
-  std::vector<Arrow *> w;
+  Storage<Shape *> movedShapes_;
+  Storage<Arrow *> movedArrows_;
   Arrow *selectedArrow_;
 
   QRect borders_;

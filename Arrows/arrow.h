@@ -55,5 +55,5 @@ class Arrow {
 class ArrowObserver {
  public:
   virtual void provideArrowDeletion(Arrow *arrow, Arrow::ShapeType type) = 0;
-  virtual void provideArrowMove(Shape *shape, int dx, int dy) = 0;
+  virtual void provideArrowMove(Arrow *arrow, int dx, int dy) = 0;
 };

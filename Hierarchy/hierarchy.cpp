@@ -2,7 +2,7 @@
 
 #include <Shape/group.h>
 
-#include <QDebug>
+#include <QApplication>
 #include <QTreeView>
 
 #include "TreeModel/treeModel.h"
@@ -62,7 +62,9 @@ void Hierarchy::processNode(Shape * shape, QModelIndex index) {
 }
 
 void Hierarchy::onShapeSelected(const QModelIndex& index) {
-  selectedShapes_.clear();
+  if (!(QApplication::keyboardModifiers() & Qt::ControlModifier)) {
+    selectedShapes_.clear();
+  }
 
   int id;
   for (auto& idIndex : items_) {
@@ -75,13 +77,18 @@ void Hierarchy::onShapeSelected(const QModelIndex& index) {
   bool founded = false;
   for (auto& shape : shapes_) {
     if (shape->getId() == id) {
-      selectedShapes_.addElement(shape);
-      founded = true;
+      if (selectedShapes_.hasElement(shape)) {
+        selectedShapes_.removeElement(shape);
+      } else {
+        selectedShapes_.addElement(shape);
+      }
       break;
     }
   }
-  if (!founded) {
-    tree_->selectionModel()->clearSelection();
+
+  tree_->selectionModel()->clearSelection();
+  for (auto& shape : selectedShapes_) {
+    tree_->selectionModel()->select(items_[shape->getId()], QItemSelectionModel::Select);
   }
 
   notifyAllObservers();
